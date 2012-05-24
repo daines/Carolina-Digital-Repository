@@ -471,8 +471,7 @@ public class METSPackageSIPProcessor implements SIPProcessor {
 		}
 
 		Validator metsValidator = schema.newValidator();
-		METSParseException handler = new METSParseException(
-				"There was a problem parsing METS XML.");
+		METSParseException handler = new METSParseException();
 		metsValidator.setErrorHandler(handler);
 		// TODO get a Result document for reporting error
 		try {

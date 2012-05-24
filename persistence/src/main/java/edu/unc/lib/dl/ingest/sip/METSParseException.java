@@ -44,18 +44,35 @@ public class METSParseException extends IngestException implements ErrorHandler 
 		return errors;
 	}
 
+	@Override
+	public String getMessage() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(msg);
+		for(SAXParseException e : this.fatalErrors) {
+			sb.append("\n").append(e.getMessage());
+		}
+		for(SAXParseException e : this.errors) {
+			sb.append("\n").append(e.getMessage());
+		}
+		for(SAXParseException e : this.warnings) {
+			sb.append("\n").append(e.getMessage());
+		}
+		return sb.toString();
+	}
+
 	public List<SAXParseException> getFatalErrors() {
 		return fatalErrors;
 	}
 
 	private List<SAXParseException> errors = new ArrayList<SAXParseException>();
 	private List<SAXParseException> fatalErrors = new ArrayList<SAXParseException>();
+	private static final String msg = "There was a problem parsing METS XML.";
 
 	/**
 	 * @param msg
 	 */
-	public METSParseException(String msg) {
-		super(msg);
+	public METSParseException() {
+		super("There was a problem parsing METS XML.");
 	}
 
 	/*
