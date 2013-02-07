@@ -25,7 +25,7 @@
 		<form:form commandName="requestAccessForm" class="user_form">
 			<h2>Request Access
 				<c:if test="${not empty metadata}">
-					to ${metadata.title }
+					to ${metadata.title}
 				</c:if>
 			</h2>
 			<c:if test="${not empty metadata && not empty metadata.parentCollection}">
@@ -62,12 +62,17 @@
 				<p>Please leave any additional information about what you are requesting access for and why you are requesting it.</p>
 				<form:textarea path="comments" cols="80" rows="8"/>
 			</div>
+			<div class="form_section">
+				${requestScope.reCaptcha}
+				<span><form:errors path="recaptcha_challenge_field" /></span>
+			</div>
 			
 			<div class="form_section">
 				<input type="submit" name="submit" value="Submit request"/>
 			</div>
 			
 			<form:hidden path="requestedId" value="${metadata.id}"/>
+			<form:hidden path="requestedTitle" value="${metadata.title}"/>
 		</form:form>
 	</div>
 </div>

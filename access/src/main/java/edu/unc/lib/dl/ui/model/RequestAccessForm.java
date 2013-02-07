@@ -8,6 +8,10 @@ public class RequestAccessForm {
 	private String username;
 	private String affiliation;
 	private String requestedId;
+	private String requestedTitle;
+	private String recaptcha_challenge_field;
+	private String recaptcha_response_field;
+	private String remoteAddr;
 
 	public String getPersonalName() {
 		return personalName;
@@ -63,5 +67,37 @@ public class RequestAccessForm {
 
 	public void setRequestedId(String requestedId) {
 		this.requestedId = requestedId;
+	}
+
+	public String getRequestedTitle() {
+		return requestedTitle;
+	}
+
+	public void setRequestedTitle(String requestedTitle) {
+		this.requestedTitle = requestedTitle;
+	}
+
+	public String getRecaptcha_challenge_field() {
+		return recaptcha_challenge_field;
+	}
+
+	public void setRecaptcha_challenge_field(String recaptcha_challenge_field) {
+		this.recaptcha_challenge_field = recaptcha_challenge_field;
+	}
+
+	public String getRecaptcha_response_field() {
+		return recaptcha_response_field;
+	}
+
+	public void setRecaptcha_response_field(String recaptcha_response_field) {
+		this.recaptcha_response_field = recaptcha_response_field;
+	}
+
+	public String getRemoteAddr() {
+		return remoteAddr;
+	}
+
+	public void setRemoteAddr(String remoteAddr) {
+		this.remoteAddr = remoteAddr;
 	}
 }
