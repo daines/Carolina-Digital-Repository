@@ -75,13 +75,13 @@ public class MetadataUIP extends FedoraObjectUIP {
 		if (incomingData == null)
 			return;
 		
+		SAXBuilder builder = new SAXBuilder();
 		for (String datastream: incomingData.keySet()){
 			ByteArrayInputStream inputStream = null;
 			try {
 				MIMETypedStream dsStream = accessClient.getDatastreamDissemination(pid, datastream, null);
 				if (dsStream != null){
 					inputStream = new ByteArrayInputStream(dsStream.getStream());
-					SAXBuilder builder = new SAXBuilder();
 					Document dsDocument = builder.build(inputStream);
 					Element rootElement = dsDocument.detachRootElement();
 					this.getOriginalData().put(datastream, rootElement);
