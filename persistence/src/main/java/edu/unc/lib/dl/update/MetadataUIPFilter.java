@@ -17,19 +17,21 @@ package edu.unc.lib.dl.update;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.jdom.Element;
 
 public abstract class MetadataUIPFilter implements UIPUpdateFilter {
-
+	private static Logger log = Logger.getLogger(MetadataUIPFilter.class);
+	
 	protected Element getNewModifiedElement(MetadataUIP uip, String datastreamName) {
 		Element incoming = uip.getIncomingData().get(datastreamName);
 		return getNewModifiedElement(uip, datastreamName, incoming);
 	}
 
 	protected Element getNewModifiedElement(MetadataUIP uip, String datastreamName, Element incoming) {
+		log.debug("Getting new modified element using base " + datastreamName + " and " + incoming);
 		if (incoming == null)
 			return null;
-
 		// If this is a replace operation, then the new modified element is simply the incoming element.
 		if (uip.getOperation().equals(UpdateOperation.REPLACE))
 			return (Element) incoming.clone();

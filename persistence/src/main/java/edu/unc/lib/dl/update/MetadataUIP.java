@@ -31,11 +31,13 @@ import edu.unc.lib.dl.agents.PersonAgent;
 import edu.unc.lib.dl.fedora.AccessClient;
 import edu.unc.lib.dl.fedora.AuthorizationException;
 import edu.unc.lib.dl.fedora.ClientUtils;
+import edu.unc.lib.dl.fedora.DatastreamPID;
 import edu.unc.lib.dl.fedora.FedoraException;
 import edu.unc.lib.dl.fedora.FileSystemException;
 import edu.unc.lib.dl.fedora.NotFoundException;
 import edu.unc.lib.dl.fedora.PID;
 import edu.unc.lib.dl.fedora.types.MIMETypedStream;
+import edu.unc.lib.dl.util.ContentModelHelper.Datastream;
 
 public class MetadataUIP extends FedoraObjectUIP {
 	private static Logger log = Logger.getLogger(MetadataUIP.class);
@@ -77,6 +79,12 @@ public class MetadataUIP extends FedoraObjectUIP {
 		
 		SAXBuilder builder = new SAXBuilder();
 		for (String datastream: incomingData.keySet()){
+			log.debug("Retrieving original document for " + datastream);
+			// Only attempt to retrieve known datastreams
+			if (Datastream.getDatastream(datastream) == null) {
+				log.debug("Datastream " + datastream + " was not a known datastream, skipping");
+				continue;
+			}
 			ByteArrayInputStream inputStream = null;
 			try {
 				MIMETypedStream dsStream = accessClient.getDatastreamDissemination(pid, datastream, null);
@@ -88,6 +96,7 @@ public class MetadataUIP extends FedoraObjectUIP {
 				}
 			} catch (NotFoundException e){
 				//Datastream wasn't found, therefore it doesn't exist and no original should be added
+				log.debug("Datastream " + datastream + " was not found for pid " + pid);
 			} catch (FedoraException e) { 
 				if (e instanceof FileSystemException || e instanceof AuthorizationException)
 					throw new UIPException("Exception occurred while attempting to store datastream " + datastream + " for "

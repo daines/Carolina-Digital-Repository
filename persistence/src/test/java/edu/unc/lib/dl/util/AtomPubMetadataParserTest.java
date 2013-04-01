@@ -112,7 +112,7 @@ public class AtomPubMetadataParserTest extends Assert {
 	
 	@Test
 	public void aclNoRELSEXT() throws Exception {
-		InputStream entryPart = new FileInputStream(new File("src/test/resources/atompub/metadataPublish.xml"));
+		InputStream entryPart = new FileInputStream(new File("src/test/resources/atompub/metadataUnpublish.xml"));
 		Abdera abdera = new Abdera();
 		Parser parser = abdera.getParser();
 		Document<Entry> entryDoc = parser.parse(entryPart);

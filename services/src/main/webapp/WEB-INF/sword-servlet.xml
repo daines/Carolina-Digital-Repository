@@ -234,6 +234,7 @@
 					<property name="schematronValidator" ref="schematronValidator" />
 				</bean>
 				<bean class="edu.unc.lib.dl.update.RELSEXTUIPFilter"/>
+				<bean class="edu.unc.lib.dl.update.AccessControlUIPFilter"/>
 			</list>
 		</property>
 	</bean>

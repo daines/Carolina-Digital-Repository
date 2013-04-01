@@ -61,14 +61,11 @@ public class AccessControlUIPFilterTest extends Assert {
 		assertEquals("false", description.getChildText(ContentModelHelper.CDRProperty.inheritPermissions.getPredicate(),
 				JDOMNamespaceUtil.CDR_ACL_NS));
 		assertEquals("public", description.getChildText(UserRole.patron.getPredicate(), JDOMNamespaceUtil.CDR_ROLE_NS));
-
-		// this.outputDatastreams(datastreamMap);
-
 	}
 
 	@Test
 	public void publicTest() throws Exception {
-		InputStream entryPart = new FileInputStream(new File("src/test/resources/atompub/metadataPublish.xml"));
+		InputStream entryPart = new FileInputStream(new File("src/test/resources/atompub/metadataUnpublish.xml"));
 		Abdera abdera = new Abdera();
 		Parser parser = abdera.getParser();
 		Document<Entry> entryDoc = parser.parse(entryPart);
@@ -92,13 +89,11 @@ public class AccessControlUIPFilterTest extends Assert {
 
 		assertEquals("no", description.getChildText(ContentModelHelper.CDRProperty.isPublished.getPredicate(),
 				JDOMNamespaceUtil.CDR_NS));
-		assertNull("no", description.getChildText(ContentModelHelper.CDRProperty.allowIndexing.getPredicate(),
+		assertNull(description.getChildText(ContentModelHelper.CDRProperty.allowIndexing.getPredicate(),
 				JDOMNamespaceUtil.CDR_NS));
-		assertNull("false", description.getChildText(ContentModelHelper.CDRProperty.inheritPermissions.getPredicate(),
+		assertNull(description.getChildText(ContentModelHelper.CDRProperty.inheritPermissions.getPredicate(),
 				JDOMNamespaceUtil.CDR_ACL_NS));
-		assertNull("public", description.getChildText(UserRole.patron.getPredicate(), JDOMNamespaceUtil.CDR_ROLE_NS));
-
-		// this.outputDatastreams(datastreamMap);
+		assertNull(description.getChildText(UserRole.patron.getPredicate(), JDOMNamespaceUtil.CDR_ROLE_NS));
 	}
 
 	@Test
@@ -126,8 +121,6 @@ public class AccessControlUIPFilterTest extends Assert {
 		org.jdom.Element description = relsExtDS.getChild("Description", JDOMNamespaceUtil.RDF_NS);
 
 		assertEquals(0, description.getChildren().size());
-
-		// this.outputDatastreams(datastreamMap);
 	}
 
 	@Test
@@ -173,8 +166,6 @@ public class AccessControlUIPFilterTest extends Assert {
 				4,
 				description.getChildren(ContentModelHelper.FedoraProperty.hasModel.name(),
 						JDOMNamespaceUtil.FEDORA_MODEL_NS).size());
-
-		// this.outputDatastreams(datastreamMap);
 	}
 
 	@Test
@@ -208,7 +199,7 @@ public class AccessControlUIPFilterTest extends Assert {
 	}
 
 	public org.jdom.Element replacePartialMatch(UpdateOperation operation) throws Exception {
-		InputStream entryPart = new FileInputStream(new File("src/test/resources/atompub/metadataPublish.xml"));
+		InputStream entryPart = new FileInputStream(new File("src/test/resources/atompub/metadataUnpublish.xml"));
 		Abdera abdera = new Abdera();
 		Parser parser = abdera.getParser();
 		Document<Entry> entryDoc = parser.parse(entryPart);

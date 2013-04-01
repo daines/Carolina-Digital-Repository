@@ -10,11 +10,10 @@ import edu.unc.lib.dl.util.ContentModelHelper.Datastream;
 import edu.unc.lib.dl.xml.JDOMNamespaceUtil;
 
 /**
- * Applies updates to the RELS-EXT datastream based on the specialized pseudo-datasteam for 
- * access controls.
+ * Applies updates to the RELS-EXT datastream based on the specialized pseudo-datasteam for access controls.
  * 
  * @author bbpennel
- *
+ * 
  */
 public class AccessControlUIPFilter extends RELSEXTUIPFilter {
 	private final String relsDatastreamName = Datastream.RELS_EXT.getName();
@@ -22,18 +21,32 @@ public class AccessControlUIPFilter extends RELSEXTUIPFilter {
 
 	@Override
 	public UpdateInformationPackage doFilter(UpdateInformationPackage uip) throws UIPException {
-		return this.doRelsExtFilter(uip, relsDatastreamName, aclDatastreamName);
+		// Only run this filter for metadata update requests
+		if (uip == null || !(uip instanceof MetadataUIP))
+			return uip;
+
+		MetadataUIP metadataUIP = (MetadataUIP) uip;
+
+		Object incomingObject = uip.getIncomingData().get(aclDatastreamName);
+		// Do not apply filter unless the rels-ext ds is being targeted.
+		if (incomingObject == null)
+			return uip;
+		
+		metadataUIP.getIncomingData().put(aclDatastreamName, RDFUtil.aclToRDF((Element)incomingObject));
+		
+		return this.doRelsExtFilter(metadataUIP, relsDatastreamName, aclDatastreamName);
 	}
 
-	protected Element performReplace(MetadataUIP uip, String baseDatastream, String incomingDatastream) throws UIPException {
+	protected Element performReplace(MetadataUIP uip, String baseDatastream, String incomingDatastream)
+			throws UIPException {
 		Element incoming = uip.getIncomingData().get(incomingDatastream);
 		Element newModified = this.getBaseElement(uip, baseDatastream, incoming);
 		if (newModified == null)
 			return null;
-		
+
 		// Clear out all the ACL related relations
 		Element baseDescription = newModified.getChild("Description", JDOMNamespaceUtil.RDF_NS);
-		Iterator relationIt = baseDescription.getChildren().iterator();
+		Iterator<?> relationIt = baseDescription.getChildren().iterator();
 		while (relationIt.hasNext()) {
 			Element element = (Element) relationIt.next();
 			if (JDOMNamespaceUtil.CDR_ROLE_NS.equals(element.getNamespace())
