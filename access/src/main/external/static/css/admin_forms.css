@@ -1,0 +1,100 @@
+form {
+	float: none;
+	font-size: 13px;
+	background-color: fff;
+}
+
+form .form_field {
+	padding-left: 5px;
+	text-align: left;
+	margin-bottom: 10px;
+}
+
+form h3 {
+	font-size: 80%;
+	font-weight: bold;
+	color: #555;
+	text-align: left;
+	padding-top: 5px;
+}
+
+form label {
+	text-align: right;
+	width: 160px;
+	display: inline-block;
+	margin-right: 20px;
+}
+
+form input, form textarea, form select {
+	background-color: #FFFFFF;
+	border: 1px solid #C8D8E0;
+	color: #666666;
+	padding: 2px;
+}
+
+form .update_button {
+	background-color: #165D7F;
+	color: fff;
+	padding: 4px 8px;
+	background-image: linear-gradient(to bottom, #72AAC3, #3E8DB0);
+	border: #3E8DB0;
+	margin: 10px 0px 0px 0px;
+}
+
+.update_field {
+	text-align: right;
+}
+
+form a {
+	text-decoration: none;
+	color: #0A5274;
+	border-bottom: 1px dashed #0A5274;
+}
+
+form .roles_granted {
+	margin: 5px 0px 0px 5px;
+	font-size: 85%;
+}
+
+.roles_granted tr:first-child {
+	border-top: 1px dashed #EFEFEF;
+}
+
+.roles_granted tr:first-child td {
+	padding-top: 5px;
+}
+
+.roles_granted td {
+	padding-bottom: 5px;
+	line-height: 1.4em;
+}
+
+.roles_granted td a {
+	border-bottom: 0px;
+}
+
+.roles_granted td span {
+	padding-right: 10px;
+}
+
+.roles_granted .role {
+	width: 160px;
+	text-align: right;
+	padding-right: 20px;
+}
+
+.roles_granted .inherited {
+	color: #9f9f9f;
+}
+
+.roles_granted select {
+	text-align: right;
+}
+
+#edit_role_granted td {
+	text-align: right;
+}
+
+#add_role_granted {
+	display: none;
+}

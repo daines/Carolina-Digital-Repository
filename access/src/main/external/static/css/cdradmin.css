@@ -211,3 +211,52 @@ ul#mainmenu li a {
 .descriptivearea a {
 	color: #0F80B3;
 }
+
+
+/* Result list */
+.details_table {
+	font-size: 14px;
+	line-height: 18px;
+	margin-top: 10px;
+}
+
+.facetcol {
+	margin-right: 20px;
+}
+
+.item_details {
+	border: 1px solid #EEEEEE;
+	width: 350px;
+	float: right;
+	padding: 8px;
+	/*margin-top: 83px;*/
+	margin-left: 15px;
+	margin-right: 4px;
+}
+
+.details_table th {
+	text-align: left;
+	font-color: #889;
+	font-size: 85%;
+	padding: 4px 0px 0px;
+	white-space: nowrap;
+}
+
+.details_table td {
+	padding: 4px 8px 4px 0px;
+}
+
+td.check_box {
+	width: 20px;
+	padding-right: 4px;
+}
+
+td.type {
+	width: 20px;
+	padding-right: 4px;
+}
+
+td.itemdetails {
+	width: 100%;
+}
+		
