@@ -55,23 +55,23 @@
 			<th></th>
 		</tr>
 		<c:forEach items="${resultResponse.resultList}" var="metadata" varStatus="status">
-			<tr>
+			<tr id="entry_${metadata.id}">
 				<td class="check_box">
 					<input type="checkbox">
 				</td>
 				<td class="type">
 					<c:choose>
 						<c:when test="${metadata.resourceType == searchSettings.resourceTypeFile}">
-							<img src="/static/images/admin_file.png" />
+							<img src="/static/images/admin/type_file.png" />
 						</c:when>
 						<c:when test="${metadata.resourceType == searchSettings.resourceTypeFolder}">
-							<img src="/static/images/admin_folder.png" />
+							<img src="/static/images/admin/type_folder.png" />
 						</c:when>
 						<c:when test="${metadata.resourceType == searchSettings.resourceTypeCollection}">
-							<img src="/static/images/admin_coll.png" />
+							<img src="/static/images/admin/type_coll.png" />
 						</c:when>
 						<c:when test="${metadata.resourceType == searchSettings.resourceTypeAggregate}">
-							<img src="/static/images/admin_aggr.png" />
+							<img src="/static/images/admin/type_aggr.png" />
 						</c:when>
 					</c:choose>
 				</td>
@@ -130,8 +130,8 @@
 					</c:choose>
 				</td>
 				<td class="menu_box">
-					<img src="images/gear.png"/>
-					<ul>
+					<img src="/static/images/admin/gear.png"/>
+					<ul class='action_menu'>
 						<li>Publish/Unpublish</li>
 						<li>Add/Edit Description</li>
 						<li>Delete</li>
@@ -146,10 +146,10 @@
 <script>
 	var require = {
 		config: {
-			'reviewList' : {
+			'resultList' : {
 				'metadataObjects': ${cdr:objectToJSON(resultResponse.resultList)}
 			}
 		}
 	};
 </script>
-<script type="text/javascript" src="/static/js/require.js" data-main="/static/js/admin/reviewList"></script>
+<script type="text/javascript" src="/static/js/require.js" data-main="/static/js/admin/resultList"></script>

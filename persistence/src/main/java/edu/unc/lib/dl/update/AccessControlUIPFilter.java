@@ -4,6 +4,7 @@ import java.util.Iterator;
 
 import org.jdom.Element;
 
+import edu.unc.lib.dl.acl.util.AccessControlTransformationUtil;
 import edu.unc.lib.dl.util.ContentModelHelper;
 import edu.unc.lib.dl.util.RDFUtil;
 import edu.unc.lib.dl.util.ContentModelHelper.Datastream;
@@ -32,7 +33,7 @@ public class AccessControlUIPFilter extends RELSEXTUIPFilter {
 		if (incomingObject == null)
 			return uip;
 		
-		metadataUIP.getIncomingData().put(aclDatastreamName, RDFUtil.aclToRDF((Element)incomingObject));
+		metadataUIP.getIncomingData().put(aclDatastreamName, AccessControlTransformationUtil.aclToRDF((Element)incomingObject));
 		
 		return this.doRelsExtFilter(metadataUIP, relsDatastreamName, aclDatastreamName);
 	}

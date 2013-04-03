@@ -16,7 +16,6 @@
 package edu.unc.lib.dl.update;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -37,8 +36,6 @@ public class FedoraObjectUIPProcessor implements UIPProcessor {
 	private Map<String, Datastream> virtualDatastreamMap;
 
 	public FedoraObjectUIPProcessor() {
-		this.virtualDatastreamMap = new HashMap<String, Datastream>();
-		this.virtualDatastreamMap.put("ACL", Datastream.RELS_EXT);
 	}
 
 	@Override
@@ -119,5 +116,9 @@ public class FedoraObjectUIPProcessor implements UIPProcessor {
 
 	public void setAccessClient(AccessClient accessClient) {
 		this.accessClient = accessClient;
+	}
+
+	public void setVirtualDatastreamMap(Map<String, Datastream> virtualDatastreamMap) {
+		this.virtualDatastreamMap = virtualDatastreamMap;
 	}
 }

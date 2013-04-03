@@ -38,22 +38,71 @@ define([ 'jquery', 'jquery-ui', 'PID', 'MetadataObject', 'DeleteObjectButton',
 			if (this.options.selected)
 				this.select();
 
-			var obj = this;
+			var self = this;
 			if (this.options.selectable) {
 				this.checkbox = this.element.find("input[type='checkbox']");
 				if (this.checkbox) {
 					this.checkbox = $(this.checkbox[0]).click(function(event) {
-						obj.toggleSelect.apply(obj);
+						self.toggleSelect.apply(self);
 						event.stopPropagation();
-					}).prop("checked", obj.options.selectCheckboxInitialState);
+					}).prop("checked", self.options.selectCheckboxInitialState);
 				}
-				this.element.click($.proxy(obj.toggleSelect, obj)).find('a').click(function(event) {
+				this.element.click($.proxy(self.toggleSelect, self)).find('a').click(function(event) {
 					event.stopPropagation();
 				});
 			}
 
 			this.initializePublishLinks();
 			this.initializeDeleteLinks();
+			
+			var actionMenu = $(".menu_box ul", this.element);
+			var menuIcon = $(".menu_box img", this.element);
+			
+			// Set up the dropdown menu
+			menuIcon.qtip({
+				content: actionMenu,
+				position: {
+					at: "bottom right",
+					my: "top right"
+				},
+				style: {
+					classes: 'qtip-light',
+					tip: false
+				},
+				show: {
+					event: 'click',
+					delay: 0
+				},
+				hide: {
+					delay: 2000,
+					event: 'unfocus mouseleave click',
+					fixed: true, // Make sure we can interact with the qTip by setting it as fixed
+					effect: function(offset) {
+						menuIcon.parent().css("background-color", "transparent");
+						$(this).fadeOut(100);
+					}
+				}
+			}).click(function(e){
+				menuIcon.parent().css("background-color", "#7BAABF");
+				e.stopPropagation();
+			});
+			
+			$(document).on('click', '.edit_access', function(){
+				var dialog = $("<div></div>")
+					.load("/acl/" + self.pid.getPath())
+					.dialog({
+						autoOpen: true,
+						width: 500,
+						height: 'auto',
+						maxHeight: 800,
+						minWidth: 500,
+						modal: true,
+						title: 'Access Control Settings',
+						close: function() {
+							dialog.remove();
+						}
+					});
+			});
 		},
 
 		initializePublishLinks : function() {

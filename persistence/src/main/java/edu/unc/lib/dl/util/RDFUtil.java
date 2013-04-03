@@ -4,11 +4,17 @@ import java.util.List;
 
 import org.jdom.Element;
 
-import edu.unc.lib.dl.acl.util.UserRole;
 import edu.unc.lib.dl.xml.JDOMNamespaceUtil;
 
 public class RDFUtil {
 
+	/**
+	 * Adds all elements from an incoming RDF element into a base RDF element without overwriting any existing data
+	 * 
+	 * @param baseRDF
+	 * @param incomingRDF
+	 * @return
+	 */
 	public static Element mergeRDF(Element baseRDF, Element incomingRDF) {
 		if (baseRDF == null)
 			return incomingRDF;
@@ -34,12 +40,20 @@ public class RDFUtil {
 		// Add all the incoming element children to the base modified object
 		for (Object incomingObject : incomingElements) {
 			if (incomingObject instanceof Element)
-				newDescription.addContent((Element)((Element) incomingObject).clone());
+				newDescription.addContent((Element) ((Element) incomingObject).clone());
 		}
 
 		return baseRDF;
 	}
 
+	/**
+	 * Adds all elements from an incoming RDF element into a base RDF element, where all relations in the incoming element
+	 * will overwrite those in the base element when they match on both subject and predicate.
+	 * 
+	 * @param baseRDF
+	 * @param incomingRDF
+	 * @return
+	 */
 	public static Element updateRDF(Element baseRDF, Element incomingRDF) {
 		if (baseRDF == null)
 			return incomingRDF;
@@ -71,64 +85,5 @@ public class RDFUtil {
 		}
 
 		return baseRDF;
-	}
-
-	public static Element aclToRDF(Element element) {
-		Element relsExt = new Element("RDF", JDOMNamespaceUtil.RDF_NS);
-		Element description = new Element("Description", JDOMNamespaceUtil.RDF_NS);
-		relsExt.addContent(description);
-
-		String value = element.getAttributeValue("discoverable", JDOMNamespaceUtil.CDR_ACL_NS);
-		if (value != null) {
-			Boolean discoverable = Boolean.parseBoolean(value);
-			Element relation = new Element(ContentModelHelper.CDRProperty.allowIndexing.getPredicate(),
-					ContentModelHelper.CDRProperty.allowIndexing.getNamespace());
-			relation.setText(discoverable ? "yes" : "no");
-			description.addContent(relation);
-		}
-
-		value = element.getAttributeValue("published", JDOMNamespaceUtil.CDR_ACL_NS);
-		if (value != null) {
-			Boolean boolValue = Boolean.parseBoolean(value);
-			Element relation = new Element(ContentModelHelper.CDRProperty.isPublished.getPredicate(),
-					ContentModelHelper.CDRProperty.isPublished.getNamespace());
-			relation.setText(boolValue ? "yes" : "no");
-			description.addContent(relation);
-		}
-
-		value = element.getAttributeValue("inherit", JDOMNamespaceUtil.CDR_ACL_NS);
-		if (value != null) {
-			Boolean boolValue = Boolean.parseBoolean(value);
-			Element relation = new Element(ContentModelHelper.CDRProperty.inheritPermissions.getPredicate(),
-					ContentModelHelper.CDRProperty.inheritPermissions.getNamespace());
-			relation.setText(boolValue.toString());
-			description.addContent(relation);
-		}
-
-		value = element.getAttributeValue("embargo-until", JDOMNamespaceUtil.CDR_ACL_NS);
-		if (value != null) {
-			Element relation = new Element(ContentModelHelper.CDRProperty.embargoUntil.getPredicate(),
-					ContentModelHelper.CDRProperty.embargoUntil.getNamespace());
-			relation.setText(value);
-			description.addContent(relation);
-		}
-
-		for (Object childObject : element.getChildren()) {
-			Element childElement = (Element) childObject;
-			if (childElement.getNamespace().equals(JDOMNamespaceUtil.CDR_ACL_NS)) {
-				String group = childElement.getAttributeValue("group", JDOMNamespaceUtil.CDR_ACL_NS);
-				String role = childElement.getAttributeValue("role", JDOMNamespaceUtil.CDR_ACL_NS);
-
-				// Validate the role is real
-				UserRole userRole = UserRole.getUserRole(JDOMNamespaceUtil.CDR_ROLE_NS.getURI() + role);
-				if (userRole != null) {
-					Element relation = new Element(userRole.getPredicate(), JDOMNamespaceUtil.CDR_ROLE_NS);
-					relation.setText(group);
-					description.addContent(relation);
-				}
-			}
-		}
-
-		return relsExt;
 	}
 }

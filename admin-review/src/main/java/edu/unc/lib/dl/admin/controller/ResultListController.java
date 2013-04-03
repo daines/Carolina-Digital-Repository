@@ -106,7 +106,7 @@ public class ResultListController extends AbstractSolrSearchController {
 
 		request.getSession().setAttribute("resultOperation", "list");
 
-		return "search/reviewList";
+		return "search/resultList";
 	}
 
 	public void setCollectionsPid(PID collectionsPid) {

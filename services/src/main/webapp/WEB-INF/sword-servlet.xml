@@ -239,10 +239,16 @@
 		</property>
 	</bean>
 	
+	
+	<util:map id="virtualDatastreamMap" key-type="java.lang.String" value-type="edu.unc.lib.dl.util.ContentModelHelper.Datastream">
+		<entry key="ACL" value-ref="RELS_EXT"/>
+	</util:map>
+	
 	<bean id="uipProcessor" class="edu.unc.lib.dl.update.FedoraObjectUIPProcessor">
 		<property name="digitalObjectManager" ref="digitalObjectManager"/>
 		<property name="accessClient" ref="accessClient"/>
 		<property name="pipeline" ref="uipPipeline"/>
+		<property name="virtualDatastreamMap" ref="virtualDatastreamMap" />
 	</bean>
 	
 	<!-- SWORD config -->

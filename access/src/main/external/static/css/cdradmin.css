@@ -259,4 +259,62 @@ td.type {
 td.itemdetails {
 	width: 100%;
 }
-		
+
+td.check_box * {
+	vertical-align: text-bottom;
+}
+
+td.creator {
+	min-width: 90px;
+	max-width: 150px;
+	font-size: 70%;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+td.date_added {
+	width: 70px;
+	font-size: 70%;
+}
+
+td.type img {
+	vertical-align: text-bottom;
+}
+
+td.menu_box {
+	width: 20px;
+	padding: 3px;
+}
+
+.details_table tr {
+	border-bottom: 1px solid #EEEEEE;
+}
+
+#results_list_actions {
+	border-bottom: 0px solid #EEEEEE;
+}
+
+#results_list_actions td {
+	margin-right: 0px;
+	padding-right: 0px;
+}
+
+#results_list_actions p {
+	vertical-align: bottom;
+}
+
+.action_menu li {
+	list-style: none;
+	margin-left: 0px;
+	text-indent: 0px;
+	padding: 5px;
+}
+
+.action_menu li:hover {
+	background-color: #eeeeff;
+}
+
+.menu_box ul {
+	display: none;
+}
