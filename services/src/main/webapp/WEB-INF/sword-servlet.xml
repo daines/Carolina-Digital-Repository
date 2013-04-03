@@ -241,7 +241,7 @@
 	
 	
 	<util:map id="virtualDatastreamMap" key-type="java.lang.String" value-type="edu.unc.lib.dl.util.ContentModelHelper.Datastream">
-		<entry key="ACL" value-ref="RELS_EXT"/>
+		<entry key="ACL" value="RELS_EXT"/>
 	</util:map>
 	
 	<bean id="uipProcessor" class="edu.unc.lib.dl.update.FedoraObjectUIPProcessor">
@@ -304,6 +304,7 @@
 	<bean id="mediaResourceManager" class="edu.unc.lib.dl.cdr.sword.server.managers.MediaResourceManagerImpl"
 		init-method="init">
 		<property name="fedoraPath" value="${fedora.protocol}://${fedora.host}${fedora.port}/${fedora.context}"/>
+		<property name="virtualDatastreamMap" ref="virtualDatastreamMap" />
 	</bean>
 	
 	<bean id="statementManager" class="edu.unc.lib.dl.cdr.sword.server.managers.StatementManagerImpl"

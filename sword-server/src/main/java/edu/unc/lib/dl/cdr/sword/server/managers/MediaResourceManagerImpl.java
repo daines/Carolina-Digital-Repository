@@ -15,11 +15,9 @@
  */
 package edu.unc.lib.dl.cdr.sword.server.managers;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -95,13 +93,18 @@ public class MediaResourceManagerImpl extends AbstractFedoraManager implements M
 			method.setDoAuthentication(true);
 			client.executeMethod(method);
 			if (method.getStatusCode() == HttpStatus.SC_OK) {
-				Map<String, List<String>> dsTriples = tripleStoreQueryService.fetchAllTriples(targetPID);
-				List<String> dsRowList = dsTriples.get(ContentModelHelper.FedoraProperty.mimeType.getURI().toString());
-				if (dsRowList.size() > 0)
-					mimeType = dsRowList.get(0);
-				dsRowList = dsTriples.get(ContentModelHelper.FedoraProperty.lastModifiedDate.getURI().toString());
-				if (dsRowList.size() > 0)
-					lastModified = dsRowList.get(0);
+				StringBuffer query = new StringBuffer();
+				query.append("select $mimeType $lastModified from <%1$s>")
+						.append(" where <%2$s> <%3$s> $mimeType and <%2$s> <%4$s> $lastModified").append(";");
+				String formatted = String.format(query.toString(),
+						tripleStoreQueryService.getResourceIndexModelUri(), targetPID.getURI() + "/" + datastream.getName(), 
+						ContentModelHelper.FedoraProperty.mimeType.getURI().toString(),
+						ContentModelHelper.FedoraProperty.lastModifiedDate.getURI().toString());
+				List<List<String>> datastreamResults = tripleStoreQueryService.queryResourceIndex(formatted);
+				if (datastreamResults.size() > 0) {
+					mimeType = datastreamResults.get(0).get(0);
+					lastModified = datastreamResults.get(0).get(1);
+				}
 				inputStream = new MethodAwareInputStream(method);
 			} else if (method.getStatusCode() >= 500) {
 				throw new SwordError(ErrorURIRegistry.RETRIEVAL_EXCEPTION, method.getStatusCode(), "Failed to retrieve "
@@ -119,14 +122,13 @@ public class MediaResourceManagerImpl extends AbstractFedoraManager implements M
 		// For the ACL virtual datastream, transform RELS-EXT into accessControl tag
 		if ("ACL".equals(targetPID.getDatastream())) {
 			try {
+				log.debug("Converting response XML to ACL format");
 				SAXBuilder saxBuilder = new SAXBuilder();
 				Document relsExt = saxBuilder.build(inputStream);
 				XMLOutputter outputter = new XMLOutputter();
 				Element accessElement = AccessControlTransformationUtil.rdfToACL(relsExt.getRootElement());
 				inputStream.close();
-				inputStream = new PipedInputStream();
-				OutputStream xmlOut = new PipedOutputStream((PipedInputStream) inputStream);
-				outputter.output(accessElement, xmlOut);
+				inputStream = new ByteArrayInputStream(outputter.outputString(accessElement).getBytes());
 			} catch (Exception e) {
 				log.debug("Failed to parse response from " + targetPID.getDatastreamURI() + " into ACL format", e);
 				throw new SwordError(ErrorURIRegistry.RETRIEVAL_EXCEPTION, "An exception occurred while attempting to retrieve " + targetPID.getPid());
@@ -175,4 +177,7 @@ public class MediaResourceManagerImpl extends AbstractFedoraManager implements M
 		this.fedoraPath = fedoraPath;
 	}
 
+	public void setVirtualDatastreamMap(Map<String, Datastream> virtualDatastreamMap) {
+		this.virtualDatastreamMap = virtualDatastreamMap;
+	}
 }
