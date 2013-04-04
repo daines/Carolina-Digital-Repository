@@ -96,7 +96,7 @@ public class AccessControlTransformationUtil {
 		relationValue = description.getChildText(ContentModelHelper.CDRProperty.inheritPermissions.getPredicate(),
 				JDOMNamespaceUtil.CDR_ACL_NS);
 		if (relationValue != null)
-			accessControl.setAttribute("inherit", ("no".equals(relationValue)) ? "false" : "true",
+			accessControl.setAttribute("inherit", ("false".equals(relationValue)) ? "false" : "true",
 					JDOMNamespaceUtil.CDR_ACL_NS);
 
 		relationValue = description.getChildText(ContentModelHelper.CDRProperty.embargoUntil.getPredicate(),
@@ -110,8 +110,9 @@ public class AccessControlTransformationUtil {
 				String role = childElement.getName();
 				String group = childElement.getTextTrim();
 
-				Element grantElement = new Element(role, JDOMNamespaceUtil.CDR_ACL_NS);
-				grantElement.setText(group);
+				Element grantElement = new Element("grant", JDOMNamespaceUtil.CDR_ACL_NS);
+				grantElement.setAttribute("group", group, JDOMNamespaceUtil.CDR_ACL_NS);
+				grantElement.setAttribute("role", role, JDOMNamespaceUtil.CDR_ACL_NS);
 				accessControl.addContent(grantElement);
 			}
 		}

@@ -135,7 +135,7 @@
 						<li>Publish/Unpublish</li>
 						<li>Add/Edit Description</li>
 						<li>Delete</li>
-						<li>Edit Access Control</li>
+						<li class="edit_access">Edit Access Control</li>
 					</ul>
 				</td>
 			</tr>

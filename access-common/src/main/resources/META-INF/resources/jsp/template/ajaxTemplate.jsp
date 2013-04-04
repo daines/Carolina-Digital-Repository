@@ -18,11 +18,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page trimDirectiveWhitespaces="true" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<c:choose>
-	<c:when test="${not empty contentPage}">
-		<c:import url="${contentPage}" />
-	</c:when>
-	<c:otherwise>
-		<c:import url="error/404.jsp" />
-	</c:otherwise>
-</c:choose>
+<c:if test="${not empty contentPage}">
+	<c:import url="${contentPage}" />
+</c:if>

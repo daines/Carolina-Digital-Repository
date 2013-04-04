@@ -35,7 +35,7 @@
 <c:set var="currentAbsoluteUrl" scope="request" value="${pageContext.request.scheme}://${pageContext.request.serverName}${currentRelativeUrl}"/>
 <c:choose>
 	<c:when test="${template =='ajax'}">
-		<c:import url="template/ajaxTemplate.jsp" />
+		<c:import url="/jsp/template/ajaxTemplate.jsp" />
 	</c:when>
 	<c:otherwise>
 		<c:import url="template/default.jsp" />

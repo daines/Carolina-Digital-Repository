@@ -24,7 +24,7 @@
 <!--[if IE 8]>
 	<link rel="stylesheet" type="text/css" href="/static/css/cdrui_styles_ie8.css" />
 <![endif]-->
-<link rel="stylesheet" type="text/css" href="/static/css/jquery-ui.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/admin/jquery-ui.css" />
 <link rel="stylesheet" type="text/css" href="/static/css/cdradmin.css" />
 
 <meta name="description" content="Carolina Digital Repository" />
@@ -33,4 +33,4 @@
 
 <link rel="shortcut icon" href="/static/images/favicon.ico" type="image/x-icon" />
 
-<link rel="stylesheet" type="text/css" href="/static/css/jquery.qtip.min.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/admin/jquery.qtip.css" />

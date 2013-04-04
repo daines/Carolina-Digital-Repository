@@ -16,7 +16,7 @@
 
  */
 define([ 'jquery', 'jquery-ui', 'PID', 'MetadataObject', 'DeleteObjectButton',
-		'PublishObjectButton' ], function($, ui, PID, MetadataObject) {
+		'PublishObjectButton', 'EditAccessControlForm'], function($, ui, PID, MetadataObject) {
 	$.widget("cdr.resultObject", {
 		options : {
 			animateSpeed : 100,
@@ -55,7 +55,13 @@ define([ 'jquery', 'jquery-ui', 'PID', 'MetadataObject', 'DeleteObjectButton',
 			this.initializePublishLinks();
 			this.initializeDeleteLinks();
 			
-			var actionMenu = $(".menu_box ul", this.element);
+			this.initializeActionMenu();
+		},
+		
+		initializeActionMenu : function() {
+			var self = this;
+			
+			var actionMenu = $(".menu_box ul", this.element).clone();
 			var menuIcon = $(".menu_box img", this.element);
 			
 			// Set up the dropdown menu
@@ -87,10 +93,11 @@ define([ 'jquery', 'jquery-ui', 'PID', 'MetadataObject', 'DeleteObjectButton',
 				e.stopPropagation();
 			});
 			
-			$(document).on('click', '.edit_access', function(){
-				var dialog = $("<div></div>")
-					.load("/acl/" + self.pid.getPath())
-					.dialog({
+			actionMenu.children(".edit_access").click(function(){
+				var dialog = $("<div><img src='/static/images/admin/ajax-loader.gif'/></div>");
+				dialog.load("acl/" + self.pid.getPath(), function(){
+					dialog.editAccessControlForm();
+				}).dialog({
 						autoOpen: true,
 						width: 500,
 						height: 'auto',
