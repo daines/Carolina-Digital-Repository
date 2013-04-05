@@ -18,6 +18,7 @@ package edu.unc.lib.dl.admin.controller;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -49,8 +50,7 @@ public class ResultListController extends AbstractSolrSearchController {
 	private static final Logger log = LoggerFactory
 			.getLogger(ResultListController.class);
 
-	@Autowired
-	List<TagProvider> tagProviders;
+	private @Resource(name="tagProviders") List<TagProvider> tagProviders;
 
 	@Autowired
 	private PID collectionsPid;
@@ -62,7 +62,8 @@ public class ResultListController extends AbstractSolrSearchController {
 			SearchFieldKeys.CONTENT_MODEL.name(),
 			SearchFieldKeys.STATUS.name(),
 			SearchFieldKeys.ANCESTOR_PATH.name(),
-			SearchFieldKeys.VERSION.name());
+			SearchFieldKeys.VERSION.name(),
+			SearchFieldKeys.ROLE_GROUP.name());
 
 	@RequestMapping(value = "list", method = RequestMethod.GET)
 	public String listRootContents(Model model, HttpServletRequest request) {
@@ -143,5 +144,9 @@ public class ResultListController extends AbstractSolrSearchController {
 
 	public void setCollectionsPid(PID collectionsPid) {
 		this.collectionsPid = collectionsPid;
+	}
+
+	public void setTagProviders(List<TagProvider> tagProviders) {
+		this.tagProviders = tagProviders;
 	}
 }
