@@ -100,7 +100,10 @@
 					<c:if test="${metadata.datastreamObjects.contains('DATA_FILE')}">
 						&nbsp;<a target="_preview" href="${cdr:getDatastreamUrl(metadata, 'DATA_FILE', fedoraUtil)}" class="preview">(preview ${metadata.getDatastreamObject("DATA_FILE").extension})</a>
 					</c:if>	
-					<!-- Tags go here -->
+					<!-- Tags -->
+					<c:forEach var="tag" items="${metadata.tags}">
+						&nbsp;<a class="status ${tag.emphasis ? 'emphasis' : ''}" href="${tag.link == null ? '#' : tag.link}" title="${tag.text}" ><c:out value="${tag.label}"/></a>
+					</c:forEach>
 				</td>
 				<td class="creator">
 					<c:choose>
