@@ -6,12 +6,15 @@ import java.util.Date;
 import java.util.Set;
 
 import edu.unc.lib.dl.acl.util.AccessGroupSet;
+import edu.unc.lib.dl.acl.util.Permission;
 import edu.unc.lib.dl.acl.util.UserRole;
 import edu.unc.lib.dl.search.solr.model.BriefObjectMetadata;
 import edu.unc.lib.dl.search.solr.model.Tag;
+import edu.unc.lib.dl.util.ContentModelHelper;
 
 public class AccessRestrictionsTagProvider implements TagProvider {
 	private static final String[] PUBLIC = new String[] { "public" };
+	private static final String EMBARGO_URI = ContentModelHelper.CDRProperty.embargoUntil.getURI().toString();
 
 	@Override
 	public void addTags(BriefObjectMetadata record, AccessGroupSet accessGroups) {
@@ -47,15 +50,13 @@ public class AccessRestrictionsTagProvider implements TagProvider {
 		}
 
 		// embargo
-		Date lastEmbargo = record.getAccessControlBean()
-				.getLastActiveEmbargoUntilDate();
-		if (lastEmbargo != null) {
-			String text = new StringBuilder("This object is embargoed until ")
-					.append(DateFormat.getDateInstance().format(lastEmbargo))
-					.toString();
-			record.addTag(new Tag("embargoed", text));
+		for(String rel : record.getRelations()) {
+			if(rel.startsWith(EMBARGO_URI)) {
+				String text = new StringBuilder("This object is embargoed until ")
+				.append(rel.substring(EMBARGO_URI.length()+1))
+				.toString();
+				record.addTag(new Tag("embargoed", text));
+			}
 		}
-
-		// described (separate DescriptiveTagProvider)
 	}
 }
