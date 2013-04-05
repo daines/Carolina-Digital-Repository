@@ -270,11 +270,15 @@ public class BriefObjectMetadataBean extends IndexDocumentBean implements BriefO
 
 	@Override
 	public List<Tag> getTags() {
+		if (this.tags == null)
+			return null;
 		return Collections.unmodifiableList(this.tags);
 	}
 
 	@Override
 	public void addTag(Tag t) {
+		if (this.tags == null)
+			this.tags = new ArrayList<Tag>();
 		this.tags.add(t);
 	}
 }

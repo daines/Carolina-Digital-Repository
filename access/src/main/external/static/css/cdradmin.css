@@ -234,6 +234,12 @@ ul#mainmenu li a {
 	margin-right: 4px;
 }
 
+.itemdetails .status {
+	color: #999999;
+	font-size: 70%;
+	padding-right: 10px;
+}
+
 .details_table th {
 	text-align: left;
 	font-color: #889;
