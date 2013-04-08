@@ -63,7 +63,8 @@ public class ResultListController extends AbstractSolrSearchController {
 			SearchFieldKeys.STATUS.name(),
 			SearchFieldKeys.ANCESTOR_PATH.name(),
 			SearchFieldKeys.VERSION.name(),
-			SearchFieldKeys.ROLE_GROUP.name());
+			SearchFieldKeys.ROLE_GROUP.name(),
+			SearchFieldKeys.RELATIONS.name());
 
 	@RequestMapping(value = "list", method = RequestMethod.GET)
 	public String listRootContents(Model model, HttpServletRequest request) {

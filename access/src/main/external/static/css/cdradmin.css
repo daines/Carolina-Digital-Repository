@@ -324,3 +324,23 @@ td.menu_box {
 .menu_box ul {
 	display: none;
 }
+
+
+/* Loading overlay */
+.load_modal {
+	display: block;
+	position: absolute;
+	z-index: 1000;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	background: rgba( 255, 255, 255, .8) 
+                url('/static/images/admin/loading-large.gif') 
+                50% 50% 
+                no-repeat;
+}
+
+.loading {
+	overflow: hidden;
+}
