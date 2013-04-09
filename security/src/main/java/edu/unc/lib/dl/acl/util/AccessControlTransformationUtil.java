@@ -48,6 +48,7 @@ public class AccessControlTransformationUtil {
 		if (value != null) {
 			Element relation = new Element(ContentModelHelper.CDRProperty.embargoUntil.getPredicate(),
 					ContentModelHelper.CDRProperty.embargoUntil.getNamespace());
+			relation.setAttribute("datatype", "http://www.w3.org/2001/XMLSchema#dateTime");
 			relation.setText(value);
 			description.addContent(relation);
 		}
