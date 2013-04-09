@@ -147,6 +147,7 @@
 </div>
 
 <script>
+console.log("<cdr-acl:accessControl xmlns:cdr-acl=\"http://cdr.unc.edu/definitions/acl#\" cdr-acl:discoverable=\"true\" cdr-acl:inherit=\"false\"><cdr-acl:grant cdr-acl:group=\"unc:app:lib:cdr:accessCopiesPatron\" cdr-acl:role=\"access-copies-patron\" /><cdr-acl:grant cdr-acl:group=\"unc:app:lib:cdr:curator\" cdr-acl:role=\"curator\" /><cdr-acl:grant cdr-acl:group=\"unc:app:lib:cdr:ingester\" cdr-acl:role=\"ingester\" /><cdr-acl:grant cdr-acl:group=\"unc:app:lib:cdr:metadataPatron\" cdr-acl:role=\"metadata-patron\" /><cdr-acl:grant cdr-acl:group=\"unc:app:lib:cdr:observer\" cdr-acl:role=\"observer\" /><cdr-acl:grant cdr-acl:group=\"unc:app:lib:cdr:patron\" cdr-acl:role=\"patron\" /><cdr-acl:grant cdr-acl:group=\"unc:app:lib:cdr:processor\" cdr-acl:role=\"processor\" /></cdr-acl:accessControl>");
 	var require = {
 		config: {
 			'resultList' : {

@@ -1,18 +1,16 @@
 package edu.unc.lib.dl.admin.controller;
 
-import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.jdom.Element;
@@ -25,6 +23,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import edu.unc.lib.dl.acl.util.AccessGroupSet;
 import edu.unc.lib.dl.acl.util.GroupsThreadStore;
@@ -32,13 +31,11 @@ import edu.unc.lib.dl.httpclient.HttpClientUtil;
 import edu.unc.lib.dl.search.solr.model.BriefObjectMetadataBean;
 import edu.unc.lib.dl.search.solr.model.SimpleIdRequest;
 import edu.unc.lib.dl.search.solr.util.SearchFieldKeys;
-import edu.unc.lib.dl.ui.controller.AbstractSolrSearchController;
 import edu.unc.lib.dl.ui.exception.InvalidRecordRequestException;
-import edu.unc.lib.dl.util.ContentModelHelper;
 import edu.unc.lib.dl.xml.JDOMNamespaceUtil;
 
 @Controller
-public class AccessControlController extends AbstractSolrSearchController {
+public class AccessControlController extends AbstractSwordController {
 	private static final Logger log = LoggerFactory.getLogger(AccessControlController.class);
 
 	@Autowired
@@ -58,6 +55,8 @@ public class AccessControlController extends AbstractSolrSearchController {
 	public String getAccessControl(@PathVariable("prefix") String idPrefix, @PathVariable("id") String id, Model model,
 			HttpServletResponse response) {
 		String pid = idPrefix + ":" + id;
+		
+		model.addAttribute("pid", pid);
 
 		// Retrieve ancestor information about the targeted object
 		AccessGroupSet accessGroups = GroupsThreadStore.getGroups();
@@ -68,7 +67,8 @@ public class AccessControlController extends AbstractSolrSearchController {
 		model.addAttribute("targetMetadata", targetObject);
 
 		// Get access information for the target's parent
-		objectRequest = new SimpleIdRequest(targetObject.getAncestorPathFacet().getSearchKey(), parentResultFields, accessGroups);
+		objectRequest = new SimpleIdRequest(targetObject.getAncestorPathFacet().getSearchKey(), parentResultFields,
+				accessGroups);
 		BriefObjectMetadataBean parentObject = queryLayer.getObjectById(objectRequest);
 		if (parentObject == null)
 			throw new InvalidRecordRequestException();
@@ -107,14 +107,14 @@ public class AccessControlController extends AbstractSolrSearchController {
 			if (method != null)
 				method.releaseConnection();
 		}
-		
+
 		Map<String, List<RoleGrant>> rolesGranted = new LinkedHashMap<String, List<RoleGrant>>();
-		for (Object elementObject: accessControlElement.getChildren()) {
-			Element childElement = (Element)elementObject;
+		for (Object elementObject : accessControlElement.getChildren()) {
+			Element childElement = (Element) elementObject;
 			if (childElement.getNamespace().equals(JDOMNamespaceUtil.CDR_ACL_NS)) {
 				String group = childElement.getAttributeValue("group", JDOMNamespaceUtil.CDR_ACL_NS);
 				String role = childElement.getAttributeValue("role", JDOMNamespaceUtil.CDR_ACL_NS);
-				
+
 				List<RoleGrant> groupList = rolesGranted.get(role);
 				if (groupList == null) {
 					groupList = new ArrayList<RoleGrant>();
@@ -123,15 +123,14 @@ public class AccessControlController extends AbstractSolrSearchController {
 				groupList.add(new RoleGrant(group, false));
 			}
 		}
-		
-		
-		for (String parentRoles: parentObject.getRoleGroup()) {
+
+		for (String parentRoles : parentObject.getRoleGroup()) {
 			String[] roleParts = parentRoles.split("\\|");
 			if (roleParts.length < 2)
 				continue;
 			String role = roleParts[0];
 			role = role.split("#")[1];
-			
+
 			List<RoleGrant> groupList = rolesGranted.get(role);
 			if (groupList == null) {
 				groupList = new ArrayList<RoleGrant>();
@@ -141,17 +140,28 @@ public class AccessControlController extends AbstractSolrSearchController {
 			// If the map already contains this group, then it is marked explicitly as not inherited
 			groupList.add(new RoleGrant(group, true));
 		}
-		
+
 		model.addAttribute("rolesGranted", rolesGranted);
 
 		model.addAttribute("template", "ajax");
 		return "edit/accessControl";
 	}
 
+	@RequestMapping(value = "acl/{prefix}/{id}", method = RequestMethod.PUT)
+	public @ResponseBody
+	String saveAccessControl(@PathVariable("prefix") String idPrefix, @PathVariable("id") String id,
+			HttpServletRequest request, HttpServletResponse response) {
+
+		String pid = idPrefix + ":" + id;
+		String datastream = "ACL";
+
+		return this.updateDatastream(pid, datastream, request);
+	}
+
 	public static class RoleGrant {
 		public String roleName;
 		public boolean inherited;
-		
+
 		public RoleGrant(String roleName, boolean inherited) {
 			this.roleName = roleName;
 			this.inherited = inherited;

@@ -42,6 +42,13 @@
 	margin: 10px 0px 0px 0px;
 }
 
+.edit_acls .update_button:active {
+	background-image: linear-gradient(to bottom, #3E8DB0, #72AAC3);
+	box-shadow: 2px 2px 2px #555555 inset;
+	color: #ddd;
+	border: #245266;
+}
+
 .update_field {
 	text-align: right;
 }
@@ -95,10 +102,10 @@
 	text-align: right;
 }
 
-#edit_role_granted td {
+.edit_role_granted td {
 	text-align: right;
 }
 
-#add_role_granted {
+.add_role_granted {
 	display: none;
 }

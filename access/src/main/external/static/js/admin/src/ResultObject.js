@@ -94,10 +94,9 @@ define([ 'jquery', 'jquery-ui', 'PID', 'MetadataObject', 'DeleteObjectButton',
 			});
 			
 			actionMenu.children(".edit_access").click(function(){
-				var dialog = $("<div><img src='/static/images/admin/ajax-loader.gif'/></div>");
-				dialog.load("acl/" + self.pid.getPath(), function(){
-					dialog.editAccessControlForm();
-				}).dialog({
+				var dialog = $("<div class='containingDialog'><img src='/static/images/admin/ajax-loader.gif'/></div>");
+				dialog.load("acl/" + self.pid.getPath(), function(responseText, textStatus, xmlHttpRequest){
+					dialog.dialog({
 						autoOpen: true,
 						width: 500,
 						height: 'auto',
@@ -109,6 +108,7 @@ define([ 'jquery', 'jquery-ui', 'PID', 'MetadataObject', 'DeleteObjectButton',
 							dialog.remove();
 						}
 					});
+				});
 			});
 		},
 
