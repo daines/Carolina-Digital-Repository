@@ -18,8 +18,7 @@
 /*
  * @author Ben Pennell
  */
-define(['jquery', 'jquery-ui', 'PID', 'MetadataObject'], function($, ui, PID, MetadataObject) {
-	var test = new PID("test");
+define(['jquery', 'jquery-ui', 'PID', 'MetadataObject', 'ModalLoadingOverlay'], function($, ui, PID, MetadataObject) {
 	$.widget("cdr.ajaxCallbackButton", {
 		options : {
 			pid : null,
@@ -37,7 +36,8 @@ define(['jquery', 'jquery-ui', 'PID', 'MetadataObject'], function($, ui, PID, Me
 			parentElement : undefined,
 			animateSpeed : 80,
 			confirm : false,
-			confirmMessage : undefined
+			confirmMessage : undefined,
+			alertHandler : "#alertHandler"
 		},
 
 		_create : function() {
@@ -51,8 +51,12 @@ define(['jquery', 'jquery-ui', 'PID', 'MetadataObject'], function($, ui, PID, Me
 				this.options.completeTarget = this;
 			if (this.options.followupTarget == undefined)
 				this.options.followupTarget = this;
+			if (this.options.setText == undefined)
+				this.options.setText = this.setText;
 			
 			this.element.addClass("ajaxCallbackButton");
+			
+			this.alertHandler = $(this.options.alertHandler);
 
 			this.followupId = null;
 			if (this.options.pid !== undefined && this.options.pid != null) {
@@ -114,25 +118,34 @@ define(['jquery', 'jquery-ui', 'PID', 'MetadataObject'], function($, ui, PID, Me
 		},
 
 		doWork : function(workMethod, workData) {
-			this.performWork($.getJSON, null);
+			this.performWork($.get, null);
 		},
 		
 		workState : function() {
-			this.element.text(this.options.workLabel);
 			this.disable();
-			if (this.options.parentObject)
+			if (this.options.parentObject) {
 				this.options.parentObject.setState("working");
+				this.options.parentObject.setStatusText(this.options.workLabel);
+			} else {
+				this.element.text(this.options.workLabel);
+			}
 		},
 
 		performWork : function(workMethod, workData) {
 			this.workState();
 			var op = this;
-			workMethod(this.workURL, workData, function(data) {
+			workMethod(this.workURL, workData, function(data, textStatus, jqXHR) {
 				if (op.options.followup) {
 					if (op.options.workDone) {
-						var workSuccessful = op.options.workDone.call(op.options.workDoneTarget, data);
-						if (!workSuccessful)
-							return;
+						try {
+							var workSuccessful = op.options.workDone.call(op.options.workDoneTarget, data);
+							if (!workSuccessful)
+								throw "Operation was unsuccessful";
+						} catch (e) {
+							op.alertHandler.alertHandler('error', e);
+							if (op.options.parentObject)
+								op.options.parentObject.setState("failed");
+						}
 					}
 					if (op.options.parentObject)
 						op.options.parentObject.setState("followup");
@@ -143,6 +156,8 @@ define(['jquery', 'jquery-ui', 'PID', 'MetadataObject'], function($, ui, PID, Me
 					op.options.complete.call(op.options.completeTarget, data);
 					op.enable();
 				}
+			}).fail(function(jqxhr, textStatus, error ){
+				op.alertHandler.alertHandler('error', textStatus + ", " + error);
 			});
 		},
 
@@ -186,7 +201,10 @@ define(['jquery', 'jquery-ui', 'PID', 'MetadataObject'], function($, ui, PID, Me
 		
 		followupState : function () {
 			if (this.options.followupLabel != null) {
-				this.element.text(this.options.followupLabel);
+				if (this.options.parentObject)
+					this.options.parentObject.setStatusText(this.options.followupLabel);
+				else this.element.text(this.options.followupLabel);
+				
 			}
 		},
 

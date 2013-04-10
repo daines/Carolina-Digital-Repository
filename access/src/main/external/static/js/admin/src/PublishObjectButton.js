@@ -63,11 +63,19 @@ define([ 'jquery', 'jquery-ui', 'AjaxCallbackButton', 'ResultObject'], function(
 		},
 
 		publishWorkDone : function(data) {
-			if (data == null) {
-				alert("Failed to change publication status for " + this.pid.pid);
-				return false;
+			var jsonData;
+			if ($.type(data) === "string") {
+				try {
+					jsonData = $.parseJSON(data);
+				} catch (e) {
+					throw "Failed to change publication status for " + this.pid.pid;
+				}
+			} else {
+				jsonData = data;
 			}
-			this.completeTimestamp = data.timestamp;
+			
+			
+			this.completeTimestamp = jsonData.timestamp;
 			return true;
 		}
 	});

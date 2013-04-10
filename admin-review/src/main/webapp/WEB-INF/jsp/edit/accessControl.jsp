@@ -132,15 +132,14 @@
 			'PID' : 'admin/src/PID',
 			'EditAccessControlForm' : 'admin/src/EditAccessControlForm',
 			'ModalLoadingOverlay' : 'admin/src/ModalLoadingOverlay',
+			'AlertHandler' : 'admin/src/AlertHandler',
 			'editable' : 'jqueryui-editable.min',
-			'moment' : 'moment.min',
-			'jquery-xmlns' : 'modseditor/lib/jquery.xmlns'
+			'moment' : 'moment.min'
 		},
 		shim: {
 			'jquery-ui' : ['jquery'],
 			'qtip' : ['jquery'],
-			'editable' : ['jquery'],
-			'jquery-xmlns' : ['jquery']
+			'editable' : ['jquery']
 		}
 	}, ['module', 'jquery', 'EditAccessControlForm'], function(module, $){
 		var accessControlModel = $.parseXML(escaped);

@@ -35,11 +35,16 @@ define([ 'jquery', 'jquery-ui', 'AjaxCallbackButton'], function($) {
 		},
 
 		deleteWorkDone: function(data) {
-			if (data == null) {
-				alert("Unable to delete object " + this.pid.pid);
-				return false;
-			}
-			this.completeTimestamp = data.timestamp;
+			var jsonData;
+			if ($.type(data) === "string") {
+				try {
+					jsonData = $.parseJSON(data);
+				} catch (e) {
+					throw "An error occurred while attempting to delete object " + this.pid.pid;
+				}
+			} else jsonData = data;
+			
+			this.completeTimestamp = jsonData.timestamp;
 			return true;
 		}
 	});

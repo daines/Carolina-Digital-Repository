@@ -1,8 +1,11 @@
-define([ 'jquery', 'jquery-ui', 'admin/src/ModalLoadingOverlay', 'PID', 'editable', 'moment', 'qtip'], function($, PID) {
+define([ 'jquery', 'jquery-ui', 'ModalLoadingOverlay', 'AlertHandler', 'PID', 
+         'editable', 'moment', 'qtip'], function($, PID) {
 	$.widget("cdr.editAccessControlForm", {
 		_create : function() {
 			var self = this;
 			self.aclNS = this.options.namespace;
+			
+			this.alertHandler = $("#alertHandler");
 			
 			this.accessControlModel = $($(this.options.xml).children()[0]).clone();
 			this.aclPrefix = this.getNamespacePrefix(this.accessControlModel, self.aclNS);
@@ -111,9 +114,11 @@ define([ 'jquery', 'jquery-ui', 'admin/src/ModalLoadingOverlay', 'PID', 'editabl
 						if (self.options.containingDialog != null) {
 							self.options.containingDialog.dialog('close');
 						}
+						self.alertHandler.alertHandler('success', 'Access control changes saved');
 					},
-					error : function(date) {
+					error : function(data) {
 						container.modalLoadingOverlay('close');
+						self.alertHandler.alertHandler('error', 'Failed to save changes: ' + data);
 					}
 				});
 			});

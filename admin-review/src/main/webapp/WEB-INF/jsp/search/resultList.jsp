@@ -38,7 +38,7 @@
 		</div>
 	</div>
 	
-	<table class="details_table">
+	<table class="result_table">
 		<tr id="results_list_actions">
 			<td colspan="7">
 				<div class="left"><p><a id="select_all">Select All</a></p> <p><a id="deselect_all">Deselect All</a></p></div>
@@ -135,10 +135,24 @@
 				<td class="menu_box">
 					<img src="/static/images/admin/gear.png"/>
 					<ul class='action_menu'>
-						<li>Publish/Unpublish</li>
-						<li>Add/Edit Description</li>
-						<li>Delete</li>
+						<li class="publish_link">
+							<c:choose>
+								<c:when test="${metadata.status.contains('Unpublished')}">Publish</c:when>
+								<c:otherwise>Unpublish</c:otherwise>
+							</c:choose>
+						</li>
 						<li class="edit_access">Edit Access Control</li>
+						<li class='edit_description'><a href="describe/${metadata.pid.path}">
+							<c:choose>
+								<c:when test="${metadata.datastreamObjects.contains('MD_DESCRIPTIVE')}">
+									Edit Description
+								</c:when>
+								<c:otherwise>
+									Add Description
+								</c:otherwise>
+							</c:choose>
+						</a></li>
+						<li class="delete_link">Delete</li>
 					</ul>
 				</td>
 			</tr>
@@ -147,7 +161,6 @@
 </div>
 
 <script>
-console.log("<cdr-acl:accessControl xmlns:cdr-acl=\"http://cdr.unc.edu/definitions/acl#\" cdr-acl:discoverable=\"true\" cdr-acl:inherit=\"false\"><cdr-acl:grant cdr-acl:group=\"unc:app:lib:cdr:accessCopiesPatron\" cdr-acl:role=\"access-copies-patron\" /><cdr-acl:grant cdr-acl:group=\"unc:app:lib:cdr:curator\" cdr-acl:role=\"curator\" /><cdr-acl:grant cdr-acl:group=\"unc:app:lib:cdr:ingester\" cdr-acl:role=\"ingester\" /><cdr-acl:grant cdr-acl:group=\"unc:app:lib:cdr:metadataPatron\" cdr-acl:role=\"metadata-patron\" /><cdr-acl:grant cdr-acl:group=\"unc:app:lib:cdr:observer\" cdr-acl:role=\"observer\" /><cdr-acl:grant cdr-acl:group=\"unc:app:lib:cdr:patron\" cdr-acl:role=\"patron\" /><cdr-acl:grant cdr-acl:group=\"unc:app:lib:cdr:processor\" cdr-acl:role=\"processor\" /></cdr-acl:accessControl>");
 	var require = {
 		config: {
 			'resultList' : {

@@ -16,7 +16,7 @@
 
  */
 define([ 'jquery', 'jquery-ui', 'PID', 'MetadataObject', 'DeleteObjectButton',
-		'PublishObjectButton', 'EditAccessControlForm'], function($, ui, PID, MetadataObject) {
+		'PublishObjectButton', 'EditAccessControlForm', 'ModalLoadingOverlay'], function($, ui, PID, MetadataObject) {
 	$.widget("cdr.resultObject", {
 		options : {
 			animateSpeed : 100,
@@ -51,17 +51,13 @@ define([ 'jquery', 'jquery-ui', 'PID', 'MetadataObject', 'DeleteObjectButton',
 					event.stopPropagation();
 				});
 			}
-
-			this.initializePublishLinks();
-			this.initializeDeleteLinks();
-			
 			this.initializeActionMenu();
 		},
 		
 		initializeActionMenu : function() {
 			var self = this;
 			
-			var actionMenu = $(".menu_box ul", this.element).clone();
+			var actionMenu = $(".menu_box ul", this.element);//.clone();
 			var menuIcon = $(".menu_box img", this.element);
 			
 			// Set up the dropdown menu
@@ -87,11 +83,19 @@ define([ 'jquery', 'jquery-ui', 'PID', 'MetadataObject', 'DeleteObjectButton',
 						menuIcon.parent().css("background-color", "transparent");
 						$(this).fadeOut(100);
 					}
+				},
+				events: {
+					render: function(event, api) {
+						self.initializePublishLinks($(this));
+						self.initializeDeleteLinks($(this));
+					}
 				}
 			}).click(function(e){
 				menuIcon.parent().css("background-color", "#7BAABF");
 				e.stopPropagation();
 			});
+			
+			this.element.modalLoadingOverlay({'text' : 'Working...', 'autoOpen' : false});
 			
 			actionMenu.children(".edit_access").click(function(){
 				var dialog = $("<div class='containingDialog'><img src='/static/images/admin/ajax-loader.gif'/></div>");
@@ -112,8 +116,8 @@ define([ 'jquery', 'jquery-ui', 'PID', 'MetadataObject', 'DeleteObjectButton',
 			});
 		},
 
-		initializePublishLinks : function() {
-			var links = this.element.find(".publish_link");
+		initializePublishLinks : function(baseElement) {
+			var links = baseElement.find(".publish_link");
 			if (!links)
 				return;
 
@@ -125,8 +129,8 @@ define([ 'jquery', 'jquery-ui', 'PID', 'MetadataObject', 'DeleteObjectButton',
 			});
 		},
 
-		initializeDeleteLinks : function() {
-			var links = this.element.find(".delete_link");
+		initializeDeleteLinks : function(baseElement) {
+			var links = baseElement.find(".delete_link");
 			if (!links)
 				return;
 			var obj = this;
@@ -191,11 +195,13 @@ define([ 'jquery', 'jquery-ui', 'PID', 'MetadataObject', 'DeleteObjectButton',
 		},
 
 		setState : function(state) {
-			if ("idle" == state) {
+			if ("idle" == state || "failed" == state) {
 				this.enable();
 				this.element.removeClass("followup working").addClass("idle");
+				this.element.modalLoadingOverlay('hide');
 				// this.element.switchClass("followup working", "idle", this.options.animateSpeed);
 			} else if ("working" == state) {
+				this.element.modalLoadingOverlay('show');
 				this.disable();
 				this.element.switchClass("idle followup", "working", this.options.animateSpeed);
 			} else if ("followup" == state) {
@@ -239,6 +245,10 @@ define([ 'jquery', 'jquery-ui', 'PID', 'MetadataObject', 'DeleteObjectButton',
 				return true;
 			}
 			return false;
+		},
+		
+		setStatusText : function(text) {
+			this.element.modalLoadingOverlay('setText', text);
 		}
 	});
 });

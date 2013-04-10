@@ -18,7 +18,9 @@ require.config({
 		'UnpublishBatchButton' : 'admin/src/UnpublishBatchButton',
 		'PublishBatchButton' : 'admin/src/PublishBatchButton',
 		'DeleteBatchButton' : 'admin/src/DeleteBatchButton',
+		'ModalLoadingOverlay' : 'admin/src/ModalLoadingOverlay',
 		'EditAccessControlForm' : 'admin/src/EditAccessControlForm',
+		'AlertHandler' : 'admin/src/AlertHandler',
 		'editable' : 'jqueryui-editable.min',
 		'moment' : 'moment.min'
 	},
@@ -32,8 +34,12 @@ require.config({
 	}
 });
 
-define('resultList', ['module', 'jquery', 'ResultObjectList', 'PublishBatchButton', 'UnpublishBatchButton', 
+define('resultList', ['module', 'jquery', 'ResultObjectList', 'AlertHandler', 'PublishBatchButton', 'UnpublishBatchButton', 
                       'DeleteBatchButton', 'EditAccessControlForm'], function(module, $, ResultObjectList) {
+	var alertHandler = $("<div id='alertHandler'></div>");
+	alertHandler.alertHandler().appendTo(document.body).hide();
+	//alertHandler.alertHandler('addMessage', "hello world");
+	
 	$("#select_all").click(function(){
 		$(".browseitem input[type='checkbox']").prop("checked", true);
 		$(".browseitem").addClass("selected");
