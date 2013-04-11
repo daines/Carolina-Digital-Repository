@@ -19,7 +19,7 @@ define([ 'jquery', 'jquery-ui', 'ModalLoadingOverlay', 'AlertHandler', 'PID',
 				clear: true,
 				combodate: {
 					minYear: moment().year(),
-					maxYear: moment().add('years', 50).year(),
+					maxYear: moment().add('years', 75).year(),
 					minuteStep: 1,
 					yearDescending: true
 				}

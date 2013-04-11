@@ -14,7 +14,8 @@ define('ResultObjectList', ['jquery', 'MetadataObject', 'ResultObject' ], functi
 			this.options = $.extend({}, this.options, options);
 			for (var i = 0; i < this.options.metadataObjects.length; i++) {
 				var metadata = this.options.metadataObjects[i];
-				var parentEl = $("#" + this.options.resultIdPrefix + metadata.id.replace(":", "\\:"));
+				var parentEl = $(".entry[data-pid='" + metadata.id + "']");
+				//var parentEl = $("#" + this.options.resultIdPrefix + metadata.id.replace(":", "\\:"));
 				this.resultObjects[metadata.id] = parentEl.resultObject({"metadata" : metadata, "resultObjectList" : [this]});
 			}
 		},
@@ -27,7 +28,12 @@ define('ResultObjectList', ['jquery', 'MetadataObject', 'ResultObject' ], functi
 			if (id in this.resultObjects) {
 				delete this.resultObjects[id];
 			}
+		},
+		
+		refreshObject: function(id) {
+			
 		}
+		
 	});
 	
 	return ResultObjectList;

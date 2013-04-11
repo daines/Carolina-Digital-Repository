@@ -34,6 +34,7 @@ define([ 'jquery', 'jquery-ui', 'PID', 'MetadataObject', 'DeleteObjectButton',
 			}
 
 			this.pid = this.metadata.pid;
+			this.overlayInitialized = false;
 
 			if (this.options.selected)
 				this.select();
@@ -57,12 +58,12 @@ define([ 'jquery', 'jquery-ui', 'PID', 'MetadataObject', 'DeleteObjectButton',
 		initializeActionMenu : function() {
 			var self = this;
 			
-			var actionMenu = $(".menu_box ul", this.element);//.clone();
+			this.actionMenu = $(".menu_box ul", this.element);
 			var menuIcon = $(".menu_box img", this.element);
 			
 			// Set up the dropdown menu
 			menuIcon.qtip({
-				content: actionMenu,
+				content: self.actionMenu,
 				position: {
 					at: "bottom right",
 					my: "top right"
@@ -95,9 +96,7 @@ define([ 'jquery', 'jquery-ui', 'PID', 'MetadataObject', 'DeleteObjectButton',
 				e.stopPropagation();
 			});
 			
-			this.element.modalLoadingOverlay({'text' : 'Working...', 'autoOpen' : false});
-			
-			actionMenu.children(".edit_access").click(function(){
+			this.actionMenu.children(".edit_access").click(function(){
 				var dialog = $("<div class='containingDialog'><img src='/static/images/admin/loading-large.gif'/></div>");
 				dialog.dialog({
 					autoOpen: true,
@@ -199,10 +198,10 @@ define([ 'jquery', 'jquery-ui', 'PID', 'MetadataObject', 'DeleteObjectButton',
 			if ("idle" == state || "failed" == state) {
 				this.enable();
 				this.element.removeClass("followup working").addClass("idle");
-				this.element.modalLoadingOverlay('hide');
+				this.updateOverlay('hide');
 				// this.element.switchClass("followup working", "idle", this.options.animateSpeed);
 			} else if ("working" == state) {
-				this.element.modalLoadingOverlay('show');
+				this.updateOverlay('show');
 				this.disable();
 				this.element.switchClass("idle followup", "working", this.options.animateSpeed);
 			} else if ("followup" == state) {
@@ -249,7 +248,17 @@ define([ 'jquery', 'jquery-ui', 'PID', 'MetadataObject', 'DeleteObjectButton',
 		},
 		
 		setStatusText : function(text) {
-			this.element.modalLoadingOverlay('setText', text);
+			this.updateOverlay('setText', [text]);
+		},
+		
+		updateOverlay : function(fnName, fnArgs) {
+			// Check to see if overlay is initialized
+			if (!this.overlayInitialized) {
+				this.overlayInitialized = true;
+				this.element.modalLoadingOverlay({'text' : 'Working...', 'autoOpen' : false});
+			}
+			var overlay = this.element.data("modalLoadingOverlay");
+			overlay[fnName].apply(overlay, fnArgs);
 		}
 	});
 });

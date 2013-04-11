@@ -378,14 +378,6 @@ td.menu_box {
 }
 
 /* Alerts */
-.jgrowl {
-	margin-right: 5px;
-}
-
-.jgrowl .qtip-content {
-	border: 0px;
-	padding: 8px;
-}
 
 .qtip-admin {
 	-webkit-box-shadow: 4px 4px 5px rgba(0, 0, 0, 0.4);
@@ -395,15 +387,24 @@ td.menu_box {
 	color: #111;
 	border: 1px solid transparent;
 	width: 360px;
+	max-width: 360px;
+	margin-right: 5px;
 }
 
-	.qtip-admin.alert-error {
-		background-color: #FFE4E2;
-		border-color: #F78B83;
+	.qtip-admin .qtip-content {
+		border: 0px;
+		padding: 12px;
+		font-size: 13px;
 	}
-	
-	.qtip-admin.alert-error .qtip-titlebar {
+
+	.qtip-admin .qtip-close {
+		top: 5px;
+		right: 5px;
+	}
+
+	.qtip-admin.alert-error {
 		background-color: #F78B83;
+		border-color: #BE6B65;
 	}
 	
 	.qtip-admin.alert-info {
@@ -412,15 +413,7 @@ td.menu_box {
 		border-color: #84CAE8;
 	}
 	
-	.qtip-admin.alert-info .qtip-titlebar {
-		background-color: #DDF0FA;
-	}
-	
 	.qtip-admin.alert-success {
 		background-color: #ECF4E1;
-		border-color: #CAED9E;
-	}
-	
-	.qtip-admin.alert-success .qtip-titlebar {
-		background-color: #CAED9E;
+		border-color: #A3BE7F;
 	}

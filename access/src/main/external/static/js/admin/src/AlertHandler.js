@@ -25,7 +25,7 @@ define('AlertHandler', ['jquery', 'jquery-ui', 'qtip'], function($) {
 	            content: {
 	                text: message,
 	                title: {
-	                    text: type,
+	                    text: "",
 	                    button: true
 	                }
 	            },

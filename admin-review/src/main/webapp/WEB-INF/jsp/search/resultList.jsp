@@ -55,7 +55,7 @@
 			<th></th>
 		</tr>
 		<c:forEach items="${resultResponse.resultList}" var="metadata" varStatus="status">
-			<tr id="entry_${metadata.id}">
+			<tr class="entry" data-pid="${metadata.id}">
 				<td class="check_box">
 					<input type="checkbox">
 				</td>
@@ -102,7 +102,7 @@
 					</c:if>	
 					<!-- Tags -->
 					<c:forEach var="tag" items="${metadata.tags}">
-						&nbsp;<a class="status ${tag.emphasis ? 'emphasis' : ''}" href="${tag.link == null ? '#' : tag.link}" title="${tag.text}" ><c:out value="${tag.label}"/></a>
+						<a class="status ${tag.emphasis ? 'emphasis' : ''}" href="${tag.link == null ? '#' : tag.link}" title="${tag.text}" ><c:out value="${tag.label}"/></a>
 					</c:forEach>
 				</td>
 				<td class="creator">
