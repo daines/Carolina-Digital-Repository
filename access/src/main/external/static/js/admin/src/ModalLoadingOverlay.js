@@ -12,16 +12,17 @@ define([ 'jquery', 'jquery-ui', 'editable', 'moment', 'qtip'], function($) {
 				this.overlay = $('<div class="load_modal icon_' + (this.options.iconSize) + '"></div>');
 			else {
 				this.overlay = $('<div class="load_modal"></div>');
-				var textSpan = $('<span>' + this.options.text + '</span>');
-				this.overlay.append(textSpan);
+				this.textSpan = $('<span>' + this.options.text + '</span>');
+				this.overlay.append(this.textSpan);
 				if (this.options.iconPath)
-					this.overlay.append('<img src="' + this.options.iconPath + '" />');
+					this.textIcon = $('<img src="' + this.options.iconPath + '" />').appendTo(this.overlay);
 			}
+			
+			this.overlay.appendTo(document.body);
+			
 			if (this.options.autoOpen)
 				this.show();
 			else this.hide();
-			
-			this.overlay.appendTo(document.body);
 		},
 		
 		close : function() {
@@ -29,11 +30,17 @@ define([ 'jquery', 'jquery-ui', 'editable', 'moment', 'qtip'], function($) {
 		},
 		
 		show : function() {
+			this.overlay.css({'visibility': 'hidden', 'display' : 'block'});
 			if (this.element != $(document)) {
 				this.overlay.css({'width' : this.element.innerWidth(), 'height' : this.element.innerHeight(),
-					'top' : this.element.position().top, 'left' : this.element.position().left});
+					'top' : this.element.offset().top, 'left' : this.element.offset().left});
+				if (this.textSpan) {
+					var topOffset = (this.element.innerHeight() - this.textSpan.outerHeight()) / 2;
+					this.textSpan.css('top', topOffset);
+					this.textIcon.css('top', topOffset);
+				}
 			}
-			this.overlay.show();
+			this.overlay.css('visibility', 'visible');
 		},
 		
 		hide : function() {
@@ -41,7 +48,7 @@ define([ 'jquery', 'jquery-ui', 'editable', 'moment', 'qtip'], function($) {
 		},
 		
 		setText : function(text) {
-			this.overlay.children('span').html(text);
+			this.textSpan.html(text);
 		}
 	});
 });

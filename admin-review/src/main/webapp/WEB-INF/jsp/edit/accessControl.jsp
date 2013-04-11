@@ -16,10 +16,10 @@
 	<h3>Access Settings</h3>
 	<div class="form_field">
 		<label>Published</label>
-		<c:set var="publishedValue" value="${targetACLs.getAttributeValue('published', aclNS)}" />
+		<c:set var="publishedAttr" value="${targetACLs.getAttribute('published', aclNS)}" />
 		<a class="boolean_toggle" data-field="published">
 			<c:choose>
-				<c:when test="${publishedValue == 'false'}">No</c:when>
+				<c:when test="${not empty publishedAttr && publishedAttr.value == 'false'}">No</c:when>
 				<c:otherwise>Yes</c:otherwise>
 			</c:choose>
 		</a>
@@ -29,19 +29,19 @@
 	</div>
 	<div class="form_field">
 		<label>Embargo</label>
-		<c:set var="embargoValue" value="${targetACLs.getAttributeValue('embargo-until', aclNS)}" />
+		<c:set var="embargoAttr" value="${targetACLs.getAttribute('embargo-until', aclNS)}" />
 		<a href="#" class="add_embargo" data-type="combodate">
-			<c:if test="${embargoValue != null}">
-				<c:out value="${embargoValue}" />
+			<c:if test="${not empty embargoAttr}">
+				<c:out value="${embargoAttr.value}" />
 			</c:if>
 		</a>
 	</div>
 	<div class="form_field">
 		<label>Discoverable</label>
-		<c:set var="discoverableValue" value="${targetACLs.getAttributeValue('discoverable', aclNS)}" />
+		<c:set var="discoverableAttr" value="${targetACLs.getAttribute('discoverable', aclNS)}" />
 		<a class="boolean_toggle" data-field="discoverable">
 			<c:choose>
-				<c:when test="${discoverableValue == 'false'}">
+				<c:when test="${not empty discoverableAttr && discoverableAttr.value == 'false'}">
 					No
 				</c:when>
 				<c:otherwise>
@@ -53,10 +53,10 @@
 	<h3>Roles Granted</h3>
 	<div class="form_field">
 		<label>Inherit from parents?</label>
-		<c:set var="inheritValue" value="${targetACLs.getAttributeValue('inherit', aclNS)}" />
+		<c:set var="inheritAttr" value="${targetACLs.getAttribute('inherit', aclNS)}" />
 		<a class="inherit_toggle" data-field="inherit">
 			<c:choose>
-				<c:when test="${inheritValue == 'false'}">
+				<c:when test="${not empty inheritAttr && inheritAttr.value == 'false'}">
 					No
 					<c:set var="inheritanceDisabled" value="inheritance_disabled" />
 				</c:when>

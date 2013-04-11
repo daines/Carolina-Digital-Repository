@@ -249,6 +249,7 @@
 		<property name="accessClient" ref="accessClient"/>
 		<property name="pipeline" ref="uipPipeline"/>
 		<property name="virtualDatastreamMap" ref="virtualDatastreamMap" />
+		<property name="operationsMessageSender" ref="operationsMessageSender" />
 	</bean>
 	
 	<!-- SWORD config -->

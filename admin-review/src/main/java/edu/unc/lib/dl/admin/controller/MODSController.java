@@ -18,6 +18,7 @@ package edu.unc.lib.dl.admin.controller;
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -150,12 +151,12 @@ public class MODSController extends AbstractSwordController {
 	@RequestMapping(value = "describe/{prefix}/{id}", method = RequestMethod.POST)
 	public @ResponseBody
 	String updateDescription(@PathVariable("prefix") String idPrefix, @PathVariable("id") String id, Model model,
-			HttpServletRequest request) {
+			HttpServletRequest request, HttpServletResponse response) {
 
 		String pid = idPrefix + ":" + id;
 		String datastream = Datastream.MD_DESCRIPTIVE.getName();
 
-		return this.updateDatastream(pid, datastream, request);
+		return this.updateDatastream(pid, datastream, request, response);
 	}
 
 	public void setSwordUrl(String swordUrl) {

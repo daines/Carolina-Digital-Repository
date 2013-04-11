@@ -16,6 +16,9 @@
 package edu.unc.lib.dl.update;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -24,7 +27,9 @@ import org.apache.log4j.Logger;
 import edu.unc.lib.dl.agents.Agent;
 import edu.unc.lib.dl.fedora.AccessClient;
 import edu.unc.lib.dl.services.DigitalObjectManager;
+import edu.unc.lib.dl.services.OperationsMessageSender;
 import edu.unc.lib.dl.util.ContentModelHelper.Datastream;
+import edu.unc.lib.dl.util.IndexingActionType;
 
 public class FedoraObjectUIPProcessor implements UIPProcessor {
 	private static Logger log = Logger.getLogger(FedoraObjectUIPProcessor.class);
@@ -32,6 +37,7 @@ public class FedoraObjectUIPProcessor implements UIPProcessor {
 	private DigitalObjectManager digitalObjectManager;
 	private UIPUpdatePipeline pipeline;
 	private AccessClient accessClient;
+	private OperationsMessageSender operationsMessageSender;
 
 	private Map<String, Datastream> virtualDatastreamMap;
 
@@ -76,8 +82,25 @@ public class FedoraObjectUIPProcessor implements UIPProcessor {
 						modifiedFiles.get(targetedDatastream.getName()), uip.getMimetype(targetedDatastream.getName()),
 						(Agent) uip.getUser(), uip.getMessage());
 			}
-
+			
+			// Issue indexing operations based on the data updated
+			Collection<IndexingActionType> indexingActions = getIndexingActions(fuip);
+			if (indexingActions != null)
+				for (IndexingActionType actionType: indexingActions)
+					this.operationsMessageSender.sendIndexingOperation(uip.getUser().getOnyen(), Arrays.asList(uip.getPID()), actionType);
 		}
+	}
+	
+	private Collection<IndexingActionType> getIndexingActions(FedoraObjectUIP fuip) {
+		if (fuip.getModifiedData().size() == 0)
+			return null;
+		Collection<IndexingActionType> actionTypes = new HashSet<IndexingActionType>(fuip.getModifiedData().size());
+		if (fuip.incomingData.containsKey("ACL") && fuip.modifiedData.containsKey(Datastream.RELS_EXT.getName())) {
+			actionTypes.add(IndexingActionType.RECURSIVE_ADD);
+		} else {
+			actionTypes.add(IndexingActionType.ADD);
+		}
+		return actionTypes;
 	}
 
 	private Datastream getTargetedDatastream(FedoraObjectUIP fuip) {
@@ -120,5 +143,9 @@ public class FedoraObjectUIPProcessor implements UIPProcessor {
 
 	public void setVirtualDatastreamMap(Map<String, Datastream> virtualDatastreamMap) {
 		this.virtualDatastreamMap = virtualDatastreamMap;
+	}
+
+	public void setOperationsMessageSender(OperationsMessageSender operationsMessageSender) {
+		this.operationsMessageSender = operationsMessageSender;
 	}
 }

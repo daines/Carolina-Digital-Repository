@@ -155,7 +155,7 @@ public class AccessControlController extends AbstractSwordController {
 		String pid = idPrefix + ":" + id;
 		String datastream = "ACL";
 
-		return this.updateDatastream(pid, datastream, request);
+		return this.updateDatastream(pid, datastream, request, response);
 	}
 
 	public static class RoleGrant {

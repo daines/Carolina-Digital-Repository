@@ -98,20 +98,21 @@ define([ 'jquery', 'jquery-ui', 'PID', 'MetadataObject', 'DeleteObjectButton',
 			this.element.modalLoadingOverlay({'text' : 'Working...', 'autoOpen' : false});
 			
 			actionMenu.children(".edit_access").click(function(){
-				var dialog = $("<div class='containingDialog'><img src='/static/images/admin/ajax-loader.gif'/></div>");
+				var dialog = $("<div class='containingDialog'><img src='/static/images/admin/loading-large.gif'/></div>");
+				dialog.dialog({
+					autoOpen: true,
+					width: 500,
+					height: 'auto',
+					maxHeight: 800,
+					minWidth: 500,
+					modal: true,
+					title: 'Access Control Settings',
+					close: function() {
+						dialog.remove();
+					}
+				});
 				dialog.load("acl/" + self.pid.getPath(), function(responseText, textStatus, xmlHttpRequest){
-					dialog.dialog({
-						autoOpen: true,
-						width: 500,
-						height: 'auto',
-						maxHeight: 800,
-						minWidth: 500,
-						modal: true,
-						title: 'Access Control Settings',
-						close: function() {
-							dialog.remove();
-						}
-					});
+					dialog.dialog('option', 'position', 'center');
 				});
 			});
 		},

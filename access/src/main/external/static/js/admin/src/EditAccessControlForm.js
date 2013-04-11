@@ -66,11 +66,10 @@ define([ 'jquery', 'jquery-ui', 'ModalLoadingOverlay', 'AlertHandler', 'PID',
 				if (roleValue == "" || groupName == "")
 					return false;
 				
-				var roleRow = $("tr.role_" + roleValue, self.element);
+				var roleRow = $("tr.role_groups[data-value='" + roleValue +"']", self.element);
 				if (roleRow.length == 0) {
-					var roleName = $(".add_role_name :selected", self.element).text();
-					roleRow = $("<tr class='role_" + roleValue + "'><td class='role'>" + 
-							roleName + "</td><td class='groups'></td></tr>");
+					roleRow = $("<tr class='role_groups' data-value='" + roleValue + "'><td class='role'>" + 
+							roleValue + "</td><td class='groups'></td></tr>");
 					$(".edit_role_granted", self.element).before(roleRow);
 				}
 				
@@ -111,6 +110,7 @@ define([ 'jquery', 'jquery-ui', 'ModalLoadingOverlay', 'AlertHandler', 'PID',
 					type : 'PUT',
 					data : self.xml2Str(self.accessControlModel),
 					success : function(data) {
+						container.modalLoadingOverlay('close');
 						if (self.options.containingDialog != null) {
 							self.options.containingDialog.dialog('close');
 						}
@@ -156,7 +156,7 @@ define([ 'jquery', 'jquery-ui', 'ModalLoadingOverlay', 'AlertHandler', 'PID',
 		addElement: function(xmlNode, localName, namespace, namespacePrefix) {
 			var nodeName = localName;
 			if (namespacePrefix != null && namespacePrefix != "") 
-				nodeName = prefix + ":" + localName;
+				nodeName = namespacePrefix + ":" + localName;
 			var newElement = xmlNode[0].ownerDocument.createElementNS(namespace, nodeName);
 			$(newElement).text("");
 			xmlNode.append(newElement);
