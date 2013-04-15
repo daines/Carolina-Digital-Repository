@@ -15,8 +15,8 @@
     limitations under the License.
 
  */
-define([ 'jquery', 'jquery-ui', 'PID', 'MetadataObject', 'DeleteObjectButton',
-		'PublishObjectButton', 'EditAccessControlForm', 'ModalLoadingOverlay'], function($, ui, PID, MetadataObject) {
+define([ 'jquery', 'jquery-ui', 'PID', 'MetadataObject', 'RemoteStateChangeMonitor', 'DeleteObjectButton',
+		'PublishObjectButton', 'EditAccessControlForm', 'ModalLoadingOverlay'], function($, ui, PID, MetadataObject, RemoteStateChangeMonitor) {
 	$.widget("cdr.resultObject", {
 		options : {
 			animateSpeed : 100,
@@ -117,6 +117,7 @@ define([ 'jquery', 'jquery-ui', 'PID', 'MetadataObject', 'DeleteObjectButton',
 		},
 		
 		_destroy : function () {
+			console.log("Destroying result object");
 			if (this.overlayInitialized) {
 				this.element.modalLoadingOverlay('close');
 			}
@@ -216,21 +217,23 @@ define([ 'jquery', 'jquery-ui', 'PID', 'MetadataObject', 'DeleteObjectButton',
 		},
 
 		publish : function() {
-			var obj = this;
+			this.refresh(true);
+			/*var obj = this;
 			obj.metadata.publish();
 			if ($.inArray("Parent Unpublished", obj.metadata.data.status) == -1) {
 				obj.element.switchClass("unpublished", "published", obj.options.animateSpeed);
 			}
-			this.element.find(":cdr-publishObjectButton").publishObjectButton("publishedState");
+			this.element.find(":cdr-publishObjectButton").publishObjectButton("publishedState");*/
 		},
 
 		unpublish : function() {
-			var obj = this;
+			this.refresh(true);
+			/*var obj = this;
 			obj.metadata.unpublish();
 			if ($.inArray("Parent Unpublished", obj.metadata.data.status) == -1) {
 				obj.element.switchClass("published", "unpublished", obj.options.animateSpeed);
 			}
-			this.element.find(":cdr-publishObjectButton").publishObjectButton("unpublishedState");
+			this.element.find(":cdr-publishObjectButton").publishObjectButton("unpublishedState");*/
 		},
 
 		deleteObject : function() {
@@ -265,7 +268,13 @@ define([ 'jquery', 'jquery-ui', 'PID', 'MetadataObject', 'DeleteObjectButton',
 			overlay[fnName].apply(overlay, fnArgs);
 		},
 		
-		refresh : function() {
+		refresh : function(immediately) {
+			this.updateOverlay('show');
+			this.setStatusText('Refreshing...');
+			if (immediately) {
+				this.options.resultObjectList.refreshObject(this.pid.getPid());
+				return;
+			}
 			var self = this;
 			var followupMonitor = new RemoteStateChangeMonitor({
 				'checkStatus' : function(data) {
