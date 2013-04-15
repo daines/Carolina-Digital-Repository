@@ -115,6 +115,12 @@ define([ 'jquery', 'jquery-ui', 'PID', 'MetadataObject', 'DeleteObjectButton',
 				});
 			});
 		},
+		
+		_destroy : function () {
+			if (this.overlayInitialized) {
+				this.element.modalLoadingOverlay('close');
+			}
+		},
 
 		initializePublishLinks : function(baseElement) {
 			var links = baseElement.find(".publish_link");
@@ -232,9 +238,7 @@ define([ 'jquery', 'jquery-ui', 'PID', 'MetadataObject', 'DeleteObjectButton',
 			obj.element.hide(obj.options.animateSpeed, function() {
 				obj.element.remove();
 				if (obj.options.resultObjectList) {
-					for (var index in obj.options.resultObjectList) {
-						obj.options.resultObjectList[index].removeResultObject(obj.pid.getPid());
-					}
+					obj.options.resultObjectList.removeResultObject(obj.pid.getPid());
 				}
 			});
 		},
@@ -259,6 +263,26 @@ define([ 'jquery', 'jquery-ui', 'PID', 'MetadataObject', 'DeleteObjectButton',
 			}
 			var overlay = this.element.data("modalLoadingOverlay");
 			overlay[fnName].apply(overlay, fnArgs);
+		},
+		
+		refresh : function() {
+			var self = this;
+			var followupMonitor = new RemoteStateChangeMonitor({
+				'checkStatus' : function(data) {
+					return (data != self.metadata.data._version_);
+				},
+				'checkStatusTarget' : this,
+				'statusChanged' : function(data) {
+					self.options.resultObjectList.refreshObject(self.pid.getPid());
+				},
+				'statusChangedTarget' : this, 
+				'checkStatusAjax' : {
+					url : "services/rest/item/" + self.pid.getPath() + "/solrRecord/version",
+					dataType : 'json'
+				}
+			});
+			
+			followupMonitor.performPing();
 		}
 	});
 });

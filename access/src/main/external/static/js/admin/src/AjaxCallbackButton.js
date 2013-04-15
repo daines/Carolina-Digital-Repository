@@ -18,7 +18,8 @@
 /*
  * @author Ben Pennell
  */
-define(['jquery', 'jquery-ui', 'PID', 'MetadataObject', 'ModalLoadingOverlay'], function($, ui, PID, MetadataObject) {
+define([ 'jquery', 'jquery-ui', 'PID', 'RemoteStateChangeMonitor', 'ModalLoadingOverlay'], function(
+		$, ui, PID, RemoteStateChangeMonitor) {
 	$.widget("cdr.ajaxCallbackButton", {
 		options : {
 			pid : null,
@@ -53,12 +54,11 @@ define(['jquery', 'jquery-ui', 'PID', 'MetadataObject', 'ModalLoadingOverlay'], 
 				this.options.followupTarget = this;
 			if (this.options.setText == undefined)
 				this.options.setText = this.setText;
-			
-			this.element.addClass("ajaxCallbackButton");
-			
-			this.alertHandler = $(this.options.alertHandler);
 
-			this.followupId = null;
+			this.element.addClass("ajaxCallbackButton");
+
+			this.alertHandler = $(this.options.alertHandler);
+			
 			if (this.options.pid !== undefined && this.options.pid != null) {
 				if (this.options.pid instanceof PID)
 					this.pid = this.options.pid;
@@ -66,10 +66,28 @@ define(['jquery', 'jquery-ui', 'PID', 'MetadataObject', 'ModalLoadingOverlay'], 
 					this.pid = new PID(this.options.pid);
 			}
 			this.setWorkURL(this.options.workPath);
-			this.setFollowupURL(this.options.followupPath);
-
+			
+			this.followupId = null;
+		},
+		
+		_init : function() {
 			var op = this;
+			
+			if (this.options.followup) {
+				this.setFollowupURL(this.options.followupPath);
 
+				this.followupMonitor = new RemoteStateChangeMonitor({
+					'checkStatus' : this.options.followup,
+					'checkStatusTarget' : this.options.followupTarget,
+					'statusChanged' : this.completeState,
+					'statusChangedTarget' : this.options.completeTarget, 
+					'checkStatusAjax' : {
+						url : this.followupURL,
+						dataType : 'json'
+					}
+				});
+			}
+			
 			if (this.options.confirm) {
 				this.confirmDialog = $("<div class='confirm_dialogue'></div>");
 				if (this.options.confirmMessage === undefined) {
@@ -120,7 +138,7 @@ define(['jquery', 'jquery-ui', 'PID', 'MetadataObject', 'ModalLoadingOverlay'], 
 		doWork : function(workMethod, workData) {
 			this.performWork($.get, null);
 		},
-		
+
 		workState : function() {
 			this.disable();
 			if (this.options.parentObject) {
@@ -149,14 +167,14 @@ define(['jquery', 'jquery-ui', 'PID', 'MetadataObject', 'ModalLoadingOverlay'], 
 					}
 					if (op.options.parentObject)
 						op.options.parentObject.setState("followup");
-					op.followupPing();
+					op.followupMonitor.performPing();
 				} else {
 					if (op.options.parentObject)
 						op.options.parentObject.setState("idle");
 					op.options.complete.call(op.options.completeTarget, data);
 					op.enable();
 				}
-			}).fail(function(jqxhr, textStatus, error ){
+			}).fail(function(jqxhr, textStatus, error) {
 				op.alertHandler.alertHandler('error', textStatus + ", " + error);
 			});
 		},
@@ -194,44 +212,22 @@ define(['jquery', 'jquery-ui', 'PID', 'MetadataObject', 'ModalLoadingOverlay'], 
 		destroy : function() {
 			this.element.unbind("click");
 		},
-		
-		followupPing : function() {
-			this.performFollowupPing($.getJSON, null);
-		},
-		
-		followupState : function () {
+
+		followupState : function() {
 			if (this.options.followupLabel != null) {
 				if (this.options.parentObject)
 					this.options.parentObject.setStatusText(this.options.followupLabel);
-				else this.element.text(this.options.followupLabel);
-				
+				else 
+					this.element.text(this.options.followupLabel);
+
 			}
 		},
 
-		performFollowupPing : function(followupMethod, followupData) {
-			var op = this;
-			
-			this.followupState();
-			
-			followupMethod(this.followupURL, followupData, function(data) {
-				var isDone = op.options.followup.call(op.options.followupTarget, data);
-				if (isDone) {
-					if (op.followupId != null) {
-						clearInterval(op.followupId);
-						op.followupId = null;
-					}
-					if (op.options.parentObject) {
-						op.options.parentObject.setState("idle");
-					}
-					op.enable();
-					op.completeState.call(op.options.completeTarget, data);
-				} else if (op.followupId == null) {
-					op.followupId = setInterval($.proxy(op.followupPing, op), op.options.followupFrequency);
-				}
-			});
-		},
-
 		completeState : function(data) {
+			if (this.options.parentObject) {
+				this.options.parentObject.setState("idle");
+			}
+			this.enable();
 			this.element.text(this.options.defaultLabel);
 		}
 	});

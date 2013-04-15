@@ -20,6 +20,7 @@ require.config({
 		'DeleteBatchButton' : 'admin/src/DeleteBatchButton',
 		'ModalLoadingOverlay' : 'admin/src/ModalLoadingOverlay',
 		'EditAccessControlForm' : 'admin/src/EditAccessControlForm',
+		'RemoteStateChangeMonitor' : 'admin/src/RemoteStateChangeMonitor',
 		'AlertHandler' : 'admin/src/AlertHandler',
 		'editable' : 'jqueryui-editable.min',
 		'moment' : 'moment.min'

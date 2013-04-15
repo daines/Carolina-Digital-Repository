@@ -30,12 +30,14 @@ define([ 'jquery', 'jquery-ui', 'AjaxCallbackButton', 'ResultObject'], function(
 		
 		completeState : function() {
 			if (this.options.parentObject) {
+				this.options.parentObject.setState("idle");
 				if (this.published)
 					this.options.parentObject.unpublish();
 				else this.options.parentObject.publish();
 			} else {
 				this.toggleState();
 			}
+			this.enable();
 		},
 		
 		toggleState : function() {

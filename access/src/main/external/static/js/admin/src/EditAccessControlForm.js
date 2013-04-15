@@ -115,6 +115,7 @@ define([ 'jquery', 'jquery-ui', 'ModalLoadingOverlay', 'AlertHandler', 'PID',
 							self.options.containingDialog.dialog('close');
 						}
 						self.alertHandler.alertHandler('success', 'Access control changes saved');
+						$(".entry[data-pid='" + self.options.pid + "']").resultObject('refresh');
 					},
 					error : function(data) {
 						container.modalLoadingOverlay('close');
