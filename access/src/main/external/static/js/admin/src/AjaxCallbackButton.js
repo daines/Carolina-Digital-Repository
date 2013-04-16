@@ -123,16 +123,25 @@ define([ 'jquery', 'jquery-ui', 'PID', 'RemoteStateChangeMonitor', 'ModalLoading
 
 			this.element.text(this.options.defaultLabel);
 			this.element.click(function() {
-				if (op.options.disabled)
-					return false;
-				if (op.options.confirm) {
-					op.confirmDialog.dialog("open");
-				} else {
-					op.doWork();
-				}
-
+				op.activate.call(op);
 				return false;
 			});
+			
+			if (this.options.disabled){
+				this.disable();
+			} else {
+				this.enable();
+			}
+		},
+		
+		activate : function() {
+			if (this.options.disabled)
+				return;
+			if (this.options.confirm) {
+				this.confirmDialog.dialog("open");
+			} else {
+				this.doWork();
+			}
 		},
 
 		doWork : function(workMethod, workData) {

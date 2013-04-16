@@ -54,7 +54,41 @@ define('resultList', ['module', 'jquery', 'ResultObjectList', 'AlertHandler', 'P
 	var resultObjectList = new ResultObjectList({'metadataObjects' : module.config().metadataObjects});
 	
 	
-	$("#publish_selected").publishBatchButton({'resultObjectList' : resultObjectList});
-	$("#unpublish_selected").unpublishBatchButton({'resultObjectList' : resultObjectList});
-	$("#delete_selected").deleteBatchButton({'resultObjectList' : resultObjectList});
+	$("#publish_selected").publishBatchButton({
+		'resultObjectList' : resultObjectList, 
+		'workFunction' : function() {
+				this.resultObject('setStatusText', 'Publishing...');
+				this.resultObject('updateOverlay', 'show');
+			}, 
+		'followupFunction' : function() {
+			this.resultObject('setStatusText', 'Publishing....');
+		}, 
+		'completeFunction' : function(){
+			this.resultObject('refresh', true);
+		}
+	});
+	$("#unpublish_selected").unpublishBatchButton({
+		'resultObjectList' : resultObjectList, 
+		'workFunction' : function() {
+			this.resultObject('setStatusText', 'Unpublishing...');
+			this.resultObject('updateOverlay', 'show');
+			}, 
+		'followupFunction' : function() {
+			this.resultObject('setStatusText', 'Unpublishing....');
+		}, 
+		'completeFunction' : function(){
+			this.resultObject('refresh', true);
+		}
+	});
+	$("#delete_selected").deleteBatchButton({
+		'resultObjectList' : resultObjectList, 
+		'workFunction' : function() {
+			this.resultObject('setStatusText', 'Deleting...');
+			this.resultObject('updateOverlay', 'show');
+			}, 
+		'followupFunction' : function() {
+			this.resultObject('setStatusText', 'Cleaning up...');
+		}, 
+		'completeFunction' : 'deleteElement'
+	});
 });

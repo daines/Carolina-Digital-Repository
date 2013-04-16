@@ -28,7 +28,7 @@ define([ 'jquery', 'jquery-ui', 'AjaxCallbackButton'], function($) {
 
 		completeState: function() {
 			if (this.options.parentObject != null)
-				this.options.parentObject.deleteObject();
+				this.options.parentObject.deleteElement();
 			this.destroy();
 		},
 

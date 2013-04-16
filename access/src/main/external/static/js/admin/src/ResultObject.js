@@ -33,6 +33,7 @@ define([ 'jquery', 'jquery-ui', 'PID', 'MetadataObject', 'RemoteStateChangeMonit
 				this.metadata = new MetadataObject(this.options.metadata);
 			}
 
+			this.links = [];
 			this.pid = this.metadata.pid;
 			this.overlayInitialized = false;
 
@@ -117,7 +118,6 @@ define([ 'jquery', 'jquery-ui', 'PID', 'MetadataObject', 'RemoteStateChangeMonit
 		},
 		
 		_destroy : function () {
-			console.log("Destroying result object");
 			if (this.overlayInitialized) {
 				this.element.modalLoadingOverlay('close');
 			}
@@ -127,7 +127,7 @@ define([ 'jquery', 'jquery-ui', 'PID', 'MetadataObject', 'RemoteStateChangeMonit
 			var links = baseElement.find(".publish_link");
 			if (!links)
 				return;
-
+			this.links['publish'] = links;
 			var obj = this;
 			$(links).publishObjectButton({
 				pid : obj.pid,
@@ -140,6 +140,7 @@ define([ 'jquery', 'jquery-ui', 'PID', 'MetadataObject', 'RemoteStateChangeMonit
 			var links = baseElement.find(".delete_link");
 			if (!links)
 				return;
+			this.links['delete'] = links;
 			var obj = this;
 			$(links).deleteObjectButton({
 				pid : obj.pid,
@@ -216,27 +217,25 @@ define([ 'jquery', 'jquery-ui', 'PID', 'MetadataObject', 'RemoteStateChangeMonit
 			}
 		},
 
+		getActionLinks : function(linkNames) {
+			return this.links[linkNames];
+		},
+		
 		publish : function() {
-			this.refresh(true);
-			/*var obj = this;
-			obj.metadata.publish();
-			if ($.inArray("Parent Unpublished", obj.metadata.data.status) == -1) {
-				obj.element.switchClass("unpublished", "published", obj.options.animateSpeed);
-			}
-			this.element.find(":cdr-publishObjectButton").publishObjectButton("publishedState");*/
+			var links = this.links['publish'];
+			if (links.length == 0)
+				return;
+			$(links[0]).publishObjectButton('activate');
+		},
+		
+		'delete' : function() {
+			var links = this.links['delete'];
+			if (links.length == 0)
+				return;
+			$(links[0]).deleteObjectButton('activate');
 		},
 
-		unpublish : function() {
-			this.refresh(true);
-			/*var obj = this;
-			obj.metadata.unpublish();
-			if ($.inArray("Parent Unpublished", obj.metadata.data.status) == -1) {
-				obj.element.switchClass("published", "unpublished", obj.options.animateSpeed);
-			}
-			this.element.find(":cdr-publishObjectButton").publishObjectButton("unpublishedState");*/
-		},
-
-		deleteObject : function() {
+		deleteElement : function() {
 			var obj = this;
 			obj.element.hide(obj.options.animateSpeed, function() {
 				obj.element.remove();

@@ -14,15 +14,16 @@ define('RemoteStateChangeMonitor', ['jquery'], function($) {
 			}
 		},
 		pingId : null,
+		pingData : null,
 		
 		init: function(options) {
 			this.options = $.extend({}, this.defaultOptions, options);
 			this.options.checkStatusAjax.success = $.proxy(this.pingSuccessCheck, this);
 		},
 		
-		performPing : function(pingData) {
-			if (arguments.length > 0)
-				this.options.checkStatusAjax.data = pingData;
+		performPing : function() {
+			if (this.pingData)
+				this.options.checkStatusAjax.data = this.pingData;
 			$.ajax(this.options.checkStatusAjax);
 		},
 		
