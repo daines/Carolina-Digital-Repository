@@ -134,6 +134,7 @@
 			'EditAccessControlForm' : 'admin/src/EditAccessControlForm',
 			'ModalLoadingOverlay' : 'admin/src/ModalLoadingOverlay',
 			'AlertHandler' : 'admin/src/AlertHandler',
+			'ConfirmationDialog' : 'admin/src/ConfirmationDialog',
 			'editable' : 'jqueryui-editable.min',
 			'moment' : 'moment.min'
 		},

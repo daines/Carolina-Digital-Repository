@@ -21,6 +21,7 @@ require.config({
 		'ModalLoadingOverlay' : 'admin/src/ModalLoadingOverlay',
 		'EditAccessControlForm' : 'admin/src/EditAccessControlForm',
 		'RemoteStateChangeMonitor' : 'admin/src/RemoteStateChangeMonitor',
+		'ConfirmationDialog' : 'admin/src/ConfirmationDialog',
 		'AlertHandler' : 'admin/src/AlertHandler',
 		'editable' : 'jqueryui-editable.min',
 		'moment' : 'moment.min'

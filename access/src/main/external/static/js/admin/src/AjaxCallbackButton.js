@@ -18,7 +18,7 @@
 /*
  * @author Ben Pennell
  */
-define([ 'jquery', 'jquery-ui', 'PID', 'RemoteStateChangeMonitor', 'ModalLoadingOverlay'], function(
+define([ 'jquery', 'jquery-ui', 'PID', 'RemoteStateChangeMonitor', 'ModalLoadingOverlay', 'ConfirmationDialog'], function(
 		$, ui, PID, RemoteStateChangeMonitor) {
 	$.widget("cdr.ajaxCallbackButton", {
 		options : {
@@ -37,7 +37,7 @@ define([ 'jquery', 'jquery-ui', 'PID', 'RemoteStateChangeMonitor', 'ModalLoading
 			parentElement : undefined,
 			animateSpeed : 80,
 			confirm : false,
-			confirmMessage : undefined,
+			confirmMessage : "Are you sure?",
 			alertHandler : "#alertHandler"
 		},
 
@@ -89,34 +89,12 @@ define([ 'jquery', 'jquery-ui', 'PID', 'RemoteStateChangeMonitor', 'ModalLoading
 			}
 			
 			if (this.options.confirm) {
-				this.confirmDialog = $("<div class='confirm_dialogue'></div>");
-				if (this.options.confirmMessage === undefined) {
-					this.confirmDialog.append("<p>Are you sure?</p>");
-				} else {
-					this.confirmDialog.append("<p>" + this.options.confirmMessage + "</p>");
-				}
-				$("body").append(this.confirmDialog);
-				this.confirmDialog.dialog({
-					dialogClass : "no_titlebar",
-					position : {
-						my : "right top",
-						at : "right bottom",
-						of : op.element
-					},
-					resizable : false,
-					minHeight : 60,
-					width : 180,
-					modal : false,
-					autoOpen : false,
-					buttons : {
-						"Yes" : function() {
-							if (!op.options.disabled)
-								op.doWork();
-							$(this).dialog("close");
-						},
-						"Cancel" : function() {
-							$(this).dialog("close");
-						}
+				this.element.confirmationDialog({
+					'promptText' : this.options.confirmMessage,
+					'confirmFunction' : this.doWork,
+					'confirmTarget' : this,
+					'dialogOptions' : {
+						width : 200
 					}
 				});
 			}
@@ -138,13 +116,15 @@ define([ 'jquery', 'jquery-ui', 'PID', 'RemoteStateChangeMonitor', 'ModalLoading
 			if (this.options.disabled)
 				return;
 			if (this.options.confirm) {
-				this.confirmDialog.dialog("open");
+				this.element.confirmationDialog("open");
 			} else {
 				this.doWork();
 			}
 		},
 
 		doWork : function(workMethod, workData) {
+			if (this.options.disabled)
+				return;
 			this.performWork($.get, null);
 		},
 

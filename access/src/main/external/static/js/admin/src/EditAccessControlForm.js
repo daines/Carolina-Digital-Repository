@@ -1,5 +1,5 @@
 define([ 'jquery', 'jquery-ui', 'ModalLoadingOverlay', 'AlertHandler', 'PID', 
-         'editable', 'moment', 'qtip'], function($, PID) {
+         'editable', 'moment', 'qtip', 'ConfirmationDialog'], function($, PID) {
 	$.widget("cdr.editAccessControlForm", {
 		_create : function() {
 			var self = this;
@@ -8,6 +8,7 @@ define([ 'jquery', 'jquery-ui', 'ModalLoadingOverlay', 'AlertHandler', 'PID',
 			this.alertHandler = $("#alertHandler");
 			
 			this.accessControlModel = $($(this.options.xml).children()[0]).clone();
+			this.originalDocument = this.xml2Str(this.accessControlModel);
 			this.aclPrefix = this.getNamespacePrefix(this.accessControlModel, self.aclNS);
 			
 			$.fn.editable.defaults.mode = 'inline';
@@ -132,6 +133,34 @@ define([ 'jquery', 'jquery-ui', 'ModalLoadingOverlay', 'AlertHandler', 'PID',
 					});
 				});
 			});
+			
+			if (this.options.containingDialog) {
+				var containing = this.options.containingDialog;
+				containing.data('can-close', false);
+				var closeButton = $(containing.prev().find(".ui-dialog-titlebar-close")[0]);
+				closeButton.confirmationDialog({
+					'promptText' : 'There are unsaved access control changes, close without saving?',
+					'confirmFunction' : function() {
+						containing.data('can-close', true);
+						containing.dialog('close');
+					},
+					'solo' : false,
+					'dialogOptions' : {
+						modal : true,
+						minWidth : 200,
+						maxWidth : 400
+					}
+				});
+				
+				containing.on('dialogbeforeclose', function(){
+					if (!containing.data('can-close') && self.isDocumentChanged()) {
+						closeButton.confirmationDialog('open');
+						return false;
+					} else {
+						return true;
+					}
+				});
+			}
 		},
 		
 		toggleField: function(fieldElement) {
@@ -161,6 +190,10 @@ define([ 'jquery', 'jquery-ui', 'ModalLoadingOverlay', 'AlertHandler', 'PID',
 			});
 			
 			return prefix;
+		},
+		
+		isDocumentChanged : function() {
+			return this.originalDocument != this.xml2Str(this.accessControlModel);
 		},
 		
 		groupRoleExists: function(xmlNode, roleName, groupName, namespacePrefix) {
