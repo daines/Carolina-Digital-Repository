@@ -417,3 +417,16 @@ td.menu_box {
 		background-color: #ECF4E1;
 		border-color: #A3BE7F;
 	}
+	
+/* Suggestions */
+.ui-autocomplete .ui-menu-item a {
+  display: block;
+  font-weight: normal;
+  line-height: 1.5;
+  min-height: 0;
+  padding: 2px 0.4em;
+  text-align: left;
+  text-decoration: none;
+  text-indent: 0;
+  font-size: 12px;
+}

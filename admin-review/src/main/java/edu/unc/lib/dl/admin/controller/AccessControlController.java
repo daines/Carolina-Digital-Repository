@@ -3,16 +3,19 @@ package edu.unc.lib.dl.admin.controller;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.solr.client.solrj.SolrServerException;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 import org.slf4j.Logger;
@@ -25,12 +28,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import edu.unc.lib.dl.acl.exception.AccessRestrictionException;
 import edu.unc.lib.dl.acl.util.AccessGroupSet;
 import edu.unc.lib.dl.acl.util.GroupsThreadStore;
 import edu.unc.lib.dl.httpclient.HttpClientUtil;
 import edu.unc.lib.dl.search.solr.model.BriefObjectMetadataBean;
 import edu.unc.lib.dl.search.solr.model.SimpleIdRequest;
 import edu.unc.lib.dl.search.solr.util.SearchFieldKeys;
+import edu.unc.lib.dl.search.solr.util.SolrSettings;
 import edu.unc.lib.dl.ui.exception.InvalidRecordRequestException;
 import edu.unc.lib.dl.xml.JDOMNamespaceUtil;
 
@@ -38,6 +43,8 @@ import edu.unc.lib.dl.xml.JDOMNamespaceUtil;
 public class AccessControlController extends AbstractSwordController {
 	private static final Logger log = LoggerFactory.getLogger(AccessControlController.class);
 
+	@Autowired
+	SolrSettings solrSettings;
 	@Autowired
 	private String swordUrl;
 	@Autowired
@@ -50,12 +57,20 @@ public class AccessControlController extends AbstractSwordController {
 
 	private List<String> parentResultFields = Arrays.asList(SearchFieldKeys.ID.name(), SearchFieldKeys.STATUS.name(),
 			SearchFieldKeys.ROLE_GROUP.name());
+	
+	private String[] accessGroupFields;
+	
+	@PostConstruct
+	public void init() {
+		accessGroupFields = new String[] { solrSettings.getFieldName(SearchFieldKeys.ADMIN_GROUP.name()),
+				solrSettings.getFieldName(SearchFieldKeys.READ_GROUP.name()) };
+	}
 
 	@RequestMapping(value = "acl/{prefix}/{id}", method = RequestMethod.GET)
 	public String getAccessControl(@PathVariable("prefix") String idPrefix, @PathVariable("id") String id, Model model,
 			HttpServletResponse response) {
 		String pid = idPrefix + ":" + id;
-		
+
 		model.addAttribute("pid", pid);
 
 		// Retrieve ancestor information about the targeted object
@@ -156,6 +171,13 @@ public class AccessControlController extends AbstractSwordController {
 		String datastream = "ACL";
 
 		return this.updateDatastream(pid, datastream, request, response);
+	}
+
+	@RequestMapping(value = "acl/getGroups", method = RequestMethod.GET)
+	public @ResponseBody
+	Collection<String> getAllAccessGroups() throws AccessRestrictionException, SolrServerException {
+		AccessGroupSet accessGroups = GroupsThreadStore.getGroups();
+		return this.queryLayer.getDistinctFieldValues(accessGroupFields, 500, accessGroups);
 	}
 
 	public static class RoleGrant {

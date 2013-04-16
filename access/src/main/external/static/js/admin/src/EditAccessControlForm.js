@@ -63,7 +63,7 @@ define([ 'jquery', 'jquery-ui', 'ModalLoadingOverlay', 'AlertHandler', 'PID',
 			$(".add_role_button", this.element).click(function(){
 				var roleValue = $(".add_role_name", self.element).val();
 				var groupName = $.trim($(".add_group_name", self.element).val());
-				if (roleValue == "" || groupName == "")
+				if (roleValue == "" || groupName == "" || self.groupRoleExists(self.accessControlModel, roleValue, groupName, self.aclPrefix))
 					return false;
 				
 				var roleRow = $("tr.role_groups[data-value='" + roleValue +"']", self.element);
@@ -77,8 +77,8 @@ define([ 'jquery', 'jquery-ui', 'ModalLoadingOverlay', 'AlertHandler', 'PID',
 				self.addAttribute(grantElement, 'role', roleValue, self.aclNS, self.aclPrefix);
 				self.addAttribute(grantElement, 'group', groupName, self.aclNS, self.aclPrefix);
 				
-				//console.log(self.xml2Str(self.accessControlModel));
 				$(".groups", roleRow).append("<span>" + groupName + "</span><a class='remove_group'>x</a><br/>");
+				$('.add_group_name').autocomplete('search');
 			});
 			
 			$(this.element).on("click", ".roles_granted .remove_group", function(){
@@ -123,6 +123,15 @@ define([ 'jquery', 'jquery-ui', 'ModalLoadingOverlay', 'AlertHandler', 'PID',
 					}
 				});
 			});
+			
+			$('.add_group_name').one('focus', function(){
+				var addGroup = $(this);
+				$.getJSON(self.options.groupSuggestionsURL, function(data){
+					addGroup.autocomplete({
+						source : data
+					});
+				});
+			});
 		},
 		
 		toggleField: function(fieldElement) {
@@ -152,6 +161,13 @@ define([ 'jquery', 'jquery-ui', 'ModalLoadingOverlay', 'AlertHandler', 'PID',
 			});
 			
 			return prefix;
+		},
+		
+		groupRoleExists: function(xmlNode, roleName, groupName, namespacePrefix) {
+			var prefix = "";
+			if (namespacePrefix)
+				prefix = namespacePrefix + "\\:";
+			return $(prefix + "grant[" + prefix + "role='" + roleName + "'][" + prefix + "group='" + groupName + "']", xmlNode).length > 0;
 		},
 		
 		addElement: function(xmlNode, localName, namespace, namespacePrefix) {

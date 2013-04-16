@@ -145,6 +145,7 @@
 	}, ['module', 'jquery', 'EditAccessControlForm'], function(module, $){
 		var accessControlModel = $.parseXML(escaped);
 		$(".edit_acls").editAccessControlForm({'xml': accessControlModel, 'namespace': aclNS, 
-			'containingDialog': $('.containingDialog'), 'updateUrl' : "acl/${pid.replace(':', '/')}", 'pid' : '${pid}'});
+			'containingDialog': $('.containingDialog'), 'updateUrl' : "acl/${pid.replace(':', '/')}", 'pid' : '${pid}',
+					'groupSuggestionsURL' : 'acl/getGroups'});
 	});
 </script>
