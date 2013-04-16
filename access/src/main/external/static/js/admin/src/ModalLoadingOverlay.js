@@ -20,6 +20,8 @@ define([ 'jquery', 'jquery-ui', 'editable', 'moment', 'qtip'], function($) {
 			
 			this.overlay.appendTo(document.body);
 			
+			$(window).resize($.proxy(this.resize, this));
+			
 			if (this.options.autoOpen)
 				this.show();
 			else this.hide();
@@ -32,8 +34,7 @@ define([ 'jquery', 'jquery-ui', 'editable', 'moment', 'qtip'], function($) {
 		show : function() {
 			this.overlay.css({'visibility': 'hidden', 'display' : 'block'});
 			if (this.element != $(document)) {
-				this.overlay.css({'width' : this.element.innerWidth(), 'height' : this.element.innerHeight(),
-					'top' : this.element.offset().top, 'left' : this.element.offset().left});
+				this.resize();
 				if (this.textSpan) {
 					var topOffset = (this.element.innerHeight() - this.textSpan.outerHeight()) / 2;
 					this.textSpan.css('top', topOffset);
@@ -41,6 +42,11 @@ define([ 'jquery', 'jquery-ui', 'editable', 'moment', 'qtip'], function($) {
 				}
 			}
 			this.overlay.css('visibility', 'visible');
+		},
+		
+		resize : function() {
+			this.overlay.css({'width' : this.element.innerWidth(), 'height' : this.element.innerHeight(),
+				'top' : this.element.offset().top, 'left' : this.element.offset().left});
 		},
 		
 		hide : function() {

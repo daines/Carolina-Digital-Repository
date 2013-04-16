@@ -43,13 +43,11 @@ define('resultList', ['module', 'jquery', 'ResultObjectList', 'AlertHandler', 'P
 	//alertHandler.alertHandler('addMessage', "hello world");
 	
 	$("#select_all").click(function(){
-		$(".browseitem input[type='checkbox']").prop("checked", true);
-		$(".browseitem").addClass("selected");
+		$(".result_table .entry").resultObject('select');
 	});
 	
 	$("#deselect_all").click(function(){
-		$(".browseitem input[type='checkbox']").prop("checked", false);
-		$(".browseitem").removeClass("selected");
+		$(".result_table .entry").resultObject('unselect');
 	});
 	
 	var resultObjectList = new ResultObjectList({'metadataObjects' : module.config().metadataObjects});

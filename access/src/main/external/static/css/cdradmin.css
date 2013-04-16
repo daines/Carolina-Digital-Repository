@@ -224,7 +224,7 @@ ul#mainmenu li a {
 	border-bottom: 1px solid #EEEEEE;
 }
 
-.result_table tr:hover {
+.result_table tr.entry:hover {
 	background-color: #f8f8ff;
 }
 

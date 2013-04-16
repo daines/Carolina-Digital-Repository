@@ -49,7 +49,7 @@
 		</c:if>	
 		<!-- Tags -->
 		<c:forEach var="tag" items="${metadata.tags}">
-			<a class="status ${tag.emphasis ? 'emphasis' : ''}" href="${tag.link == null ? '#' : tag.link}" title="${tag.text}" ><c:out value="${tag.label}"/></a>
+			<a class="status${tag.emphasis ? ' emphasis' : ''}" ${tag.link == null ? '' : 'href="' + tag.link + "'"} title="${tag.text}" ><c:out value="${tag.label}"/></a>
 		</c:forEach>
 	</td>
 	<td class="creator">

@@ -14,8 +14,8 @@ define([ 'jquery', 'jquery-ui', 'ModalLoadingOverlay', 'AlertHandler', 'PID',
 			$.fn.editable.defaults.mode = 'inline';
 			this.addEmbargo = $(".add_embargo", this.element).editable({
 				emptytext: 'Add embargo',
-				format: 'MM/DD/YYY',
-				viewformat: 'MM.DD.YYYY',
+				format: 'MM/DD/YYYY',
+				viewformat: 'MM/DD/YYYY',
 				template: 'MM/DD/YYYY',
 				clear: true,
 				combodate: {
@@ -61,6 +61,15 @@ define([ 'jquery', 'jquery-ui', 'ModalLoadingOverlay', 'AlertHandler', 'PID',
 				}
 			});
 			
+			$('.add_group_name').one('focus', function(){
+				var addGroup = $(this);
+				$.getJSON(self.options.groupSuggestionsURL, function(data){
+					addGroup.autocomplete({
+						source : data
+					});
+				});
+			});
+			
 			$(".add_role_button", this.element).click(function(){
 				var roleValue = $(".add_role_name", self.element).val();
 				var groupName = $.trim($(".add_group_name", self.element).val());
@@ -103,6 +112,7 @@ define([ 'jquery', 'jquery-ui', 'ModalLoadingOverlay', 'AlertHandler', 'PID',
 				$(this).remove();
 			});
 			
+			var containing = this.options.containingDialog;
 			$('.update_button').click(function(){
 				var container = ((self.options.containingDialog)? self.options.containingDialog : $(body));
 				container.modalLoadingOverlay();
@@ -111,6 +121,7 @@ define([ 'jquery', 'jquery-ui', 'ModalLoadingOverlay', 'AlertHandler', 'PID',
 					type : 'PUT',
 					data : self.xml2Str(self.accessControlModel),
 					success : function(data) {
+						containing.data('can-close', true);
 						container.modalLoadingOverlay('close');
 						if (self.options.containingDialog != null) {
 							self.options.containingDialog.dialog('close');
@@ -125,17 +136,8 @@ define([ 'jquery', 'jquery-ui', 'ModalLoadingOverlay', 'AlertHandler', 'PID',
 				});
 			});
 			
-			$('.add_group_name').one('focus', function(){
-				var addGroup = $(this);
-				$.getJSON(self.options.groupSuggestionsURL, function(data){
-					addGroup.autocomplete({
-						source : data
-					});
-				});
-			});
-			
 			if (this.options.containingDialog) {
-				var containing = this.options.containingDialog;
+				
 				containing.data('can-close', false);
 				var closeButton = $(containing.prev().find(".ui-dialog-titlebar-close")[0]);
 				closeButton.confirmationDialog({
