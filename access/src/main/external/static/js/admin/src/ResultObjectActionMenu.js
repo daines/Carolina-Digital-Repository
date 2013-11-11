@@ -1,5 +1,5 @@
-define('ResultObjectActionMenu', [ 'jquery', 'jquery-ui', 'DeleteObjectButton', 'PublishObjectButton', 'ReindexObjectButton', 'contextMenu'],
-		function($, ui, DeleteObjectButton, PublishObjectButton, ReindexObjectButton) {
+define('ResultObjectActionMenu', [ 'jquery', 'jquery-ui', 'DeleteObjectButton', 'PublishObjectButton', 'ReindexObjectButton', 'MoveObjectToTrashButton', 'contextMenu'],
+		function($, ui, DeleteObjectButton, PublishObjectButton, ReindexObjectButton, MoveObjectToTrashButton) {
 	
 	var defaultOptions = {
 		selector : undefined,
@@ -36,6 +36,13 @@ define('ResultObjectActionMenu', [ 'jquery', 'jquery-ui', 'DeleteObjectButton', 
 					items["editAccess"] = {name : 'Edit Access'};
 				if ($.inArray('editDescription', metadata.permissions) != -1)
 					items["editDescription"] = {name : 'Edit Description'};
+				if ($.inArray('moveToTrash', metadata.permissions) != -1) {
+					if ($.inArray('Deleted', metadata.status) == -1)
+						items["moveToTrash"] = {name : 'Move to trash'};
+					else
+						items["moveToTrash"] = {name : 'Remove from trash'};
+				}
+					
 				if ($.inArray('purgeForever', metadata.permissions) != -1) {
 					items["purgeForever"] = {name : 'Delete'};
 					items["reindex"] = {name : 'Reindex'};
@@ -70,6 +77,16 @@ define('ResultObjectActionMenu', [ 'jquery', 'jquery-ui', 'DeleteObjectButton', 
 									confirmAnchor : options.$trigger
 								});
 								deleteButton.activate();
+								break;
+							case "moveToTrash":
+								var trashButton = new MoveObjectToTrashButton({
+									pid : resultObject.pid,
+									parentObject : resultObject,
+									metadata : metadata,
+									confirmAnchor : options.$trigger,
+									moveToTrash: ($.inArray('Deleted', metadata.status) == -1)
+								});
+								trashButton.activate();
 								break;
 							case "reindex" :
 								var reindexButton = new ReindexObjectButton({
