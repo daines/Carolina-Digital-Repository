@@ -36,7 +36,8 @@
 		<div class="result_table_wrap with_path">
 			<table class="result_table">
 				<colgroup>
-					<% _.each(resultFields, function(resultField) { %>
+					<% _.each(resultFields, function(resultField) { 
+						console.log(resultField); %>
 						<col class="<%= resultField.colClass %>">
 					<% }); %>
 				</colgroup>
@@ -50,6 +51,8 @@
 						<% }); %>
 					</tr>
 				</thead>
+				<tbody>
+				</tbody>
 			</table>
 		</div>
 	</div>
