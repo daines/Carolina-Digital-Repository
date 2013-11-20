@@ -17,12 +17,11 @@
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="cdr" uri="http://cdr.lib.unc.edu/cdrUI" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page trimDirectiveWhitespaces="true" %>
 <div class="result_page contentarea">
 	<c:import url="search/searchMenu.jsp"/>
 
+	<h1>Trash</h1>
 	<div class="result_area">
 		<div>
 		</div>
@@ -33,7 +32,7 @@
 	//console.log("Starting " + (new Date()).getTime());
 	var require = {
 		config: {
-			'resultList' : {
+			'trashList' : {
 				'metadataObjects': ${cdr:resultsToJSON(resultResponse, accessGroupSet)},
 				'pageStart' : ${resultResponse.searchState.startRow},
 				'pageRows' : ${resultResponse.searchState.rowsPerPage},
@@ -48,4 +47,4 @@
 	};
 	//console.log("Loaded in " + ((new Date()).getTime() - startTimer));
 </script>
-<script type="text/javascript" src="/static/js/lib/require.js" data-main="/static/js/admin/resultList"></script>
+<script type="text/javascript" src="/static/js/lib/require.js" data-main="/static/js/admin/trashList"></script>

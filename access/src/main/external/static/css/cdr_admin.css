@@ -2663,6 +2663,14 @@ h1 {
 	vertical-align: middle;
 }
 
+.result_table_action_menu {
+	float: right;
+}
+
+.container_action_group + .container_action_group {
+	margin-left: 1em;
+}
+
 .container_action {
 	display: inline-block;
 	background-color: #EFEFFF;

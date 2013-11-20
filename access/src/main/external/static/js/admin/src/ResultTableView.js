@@ -13,6 +13,7 @@ define('ResultTableView', [ 'jquery', 'jquery-ui', 'ResultObjectList', 'URLUtili
 			container : undefined,
 			resultTableTemplate : "tpl!../templates/admin/resultTableView",
 			navigationBarTemplate : "tpl!../templates/admin/navigationBar",
+			resultEntryTemplate : 'tpl!../templates/admin/trashResultEntry',
 			resultFields : {
 				"select" : {name : "", colClass : "narrow", dataType : "index", sortField : "collection"},
 				"resourceType" : {name : "", colClass : "narrow", sortField : "resourceType"},
@@ -40,7 +41,8 @@ define('ResultTableView', [ 'jquery', 'jquery-ui', 'ResultObjectList', 'URLUtili
 				var fragment = $(document.createDocumentFragment());
 				self.resultObjectList = new ResultObjectList({
 					'metadataObjects' : self.options.metadataObjects, 
-					parent : self.$resultTable.children('tbody')
+					parent : self.$resultTable.children('tbody'),
+					resultEntryTemplate : self.options.resultEntryTemplate
 				});
 			
 				// No results message
@@ -282,8 +284,7 @@ define('ResultTableView', [ 'jquery', 'jquery-ui', 'ResultObjectList', 'URLUtili
 				}
 			}).children("input").prop("checked", false);
 			
-			this.actionMenu = new ResultTableActionMenu({resultObjectList : this.resultObjectList});
-			this.$containerHeader.append(this.actionMenu.element);
+			this.actionMenu = new ResultTableActionMenu({resultObjectList : this.resultObjectList}, this.$containerHeader);
 		},
 		
 		_initEventHandlers : function() {
