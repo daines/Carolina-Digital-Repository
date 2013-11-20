@@ -3276,16 +3276,8 @@ define('ParentResultObject', [ 'jquery', 'ResultObject'],
 			container : undefined,
 			resultTableTemplate : "tpl!../templates/admin/resultTableView",
 			navigationBarTemplate : "tpl!../templates/admin/navigationBar",
-			resultEntryTemplate : 'tpl!../templates/admin/trashResultEntry',
-			resultFields : {
-				"select" : {name : "", colClass : "narrow", dataType : "index", sortField : "collection"},
-				"resourceType" : {name : "", colClass : "narrow", sortField : "resourceType"},
-				"title" : {name : "Title", colClass : "itemdetails", dataType : "title", sortField : "title"},
-				"creator" : {name : "Creator", colClass : "creator", sortField : "creator"},
-				"dateAdded" : {name : "Added", colClass : "date_added", sortField : "dateAdded"},
-				"dateModified" : {name : "Modified", colClass : "date_added", sortField : "dateUpdated"},
-				"actionMenu" : {name : "", colClass : "narrow"}
-			}
+			resultEntryTemplate : 'tpl!../templates/admin/resultEntry',
+			resultFields : undefined
 		},
 		
 		_create : function() {

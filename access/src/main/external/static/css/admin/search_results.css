@@ -293,6 +293,10 @@
 	width: 75px;
 }
 
+.result_table colgroup > .original_path, .result_table .column_headers > .original_path > a { 
+	width: 300px;
+}
+
 .res_entry > td {
 	vertical-align: top;
 }

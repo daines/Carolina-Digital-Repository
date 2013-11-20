@@ -99,6 +99,15 @@ define('resultList', ['module', 'jquery', 'AlertHandler', 'SearchMenu', 'ResultT
 		metadataObjects : module.config().metadataObjects,
 		container : module.config().container,
 		alertHandler : alertHandler,
+		resultFields : {
+			"select" : {name : "", colClass : "narrow", dataType : "index", sortField : "collection"},
+			"resourceType" : {name : "", colClass : "narrow", sortField : "resourceType"},
+			"title" : {name : "Title", colClass : "itemdetails", dataType : "title", sortField : "title"},
+			"creator" : {name : "Creator", colClass : "creator", sortField : "creator"},
+			"dateAdded" : {name : "Added", colClass : "date_added", sortField : "dateAdded"},
+			"dateModified" : {name : "Modified", colClass : "date_added", sortField : "dateUpdated"},
+			"actionMenu" : {name : "", colClass : "narrow"}
+		},
 		pageNavigation : {
 			resultUrl : module.config().resultUrl,
 			filterParams : module.config().filterParams,

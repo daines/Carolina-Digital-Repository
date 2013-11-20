@@ -94,6 +94,14 @@ define('trashList', ['module', 'jquery', 'AlertHandler', 'SearchMenu', 'ResultTa
 		metadataObjects : module.config().metadataObjects,
 		container : module.config().container,
 		alertHandler : alertHandler,
+		resultEntryTemplate : 'tpl!../templates/admin/trashResultEntry',
+		resultFields : {
+			"select" : {name : "", colClass : "narrow", dataType : "index", sortField : "collection"},
+			"resourceType" : {name : "", colClass : "narrow", sortField : "resourceType"},
+			"title" : {name : "Title", colClass : "itemdetails", dataType : "title", sortField : "title"},
+			"ancestorNames" : {name : "Original Path", colClass : "original_path", sortField : "ancestorNames"},
+			"dateModified" : {name : "Modified", colClass : "date_added", sortField : "dateUpdated"}
+		},
 		pageNavigation : {
 			resultUrl : module.config().resultUrl,
 			filterParams : module.config().filterParams,

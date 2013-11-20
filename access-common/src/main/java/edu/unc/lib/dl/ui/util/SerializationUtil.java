@@ -120,6 +120,9 @@ public class SerializationUtil {
 
 		if (metadata.getIdentifier() != null)
 			result.put("identifier", metadata.getIdentifier());
+		
+		if (metadata.getAncestorNames() != null)
+			result.put("ancestorNames", metadata.getAncestorNames());
 
 		if (metadata.getTags() != null)
 			result.put("tags", metadata.getTags());
