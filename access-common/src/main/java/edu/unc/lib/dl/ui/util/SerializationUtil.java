@@ -33,7 +33,9 @@ import org.slf4j.LoggerFactory;
 
 import edu.unc.lib.dl.acl.util.AccessGroupSet;
 import edu.unc.lib.dl.search.solr.model.BriefObjectMetadata;
+import edu.unc.lib.dl.search.solr.model.CutoffFacet;
 import edu.unc.lib.dl.search.solr.model.HierarchicalBrowseResultResponse;
+import edu.unc.lib.dl.search.solr.model.HierarchicalFacetNode;
 import edu.unc.lib.dl.search.solr.model.SearchResultResponse;
 import edu.unc.lib.dl.search.solr.util.SearchSettings;
 import edu.unc.lib.dl.search.solr.util.SolrSettings;
@@ -121,6 +123,9 @@ public class SerializationUtil {
 		if (metadata.getIdentifier() != null)
 			result.put("identifier", metadata.getIdentifier());
 		
+		if (metadata.getAncestorPathFacet() != null)
+			result.put("ancestorPath", cutoffFacetToMap(metadata.getAncestorPathFacet()));
+		
 		if (metadata.getAncestorNames() != null)
 			result.put("ancestorNames", metadata.getAncestorNames());
 
@@ -142,7 +147,7 @@ public class SerializationUtil {
 		} catch (ParseException e) {
 			log.debug("Failed to parse date field for " + metadata.getId(), e);
 		}
-
+		
 		if (metadata.getDateCreated() != null)
 			result.put("created", metadata.getDateCreated());
 
@@ -161,6 +166,17 @@ public class SerializationUtil {
 			}
 		}
 
+		return result;
+	}
+	
+	private static Object cutoffFacetToMap(CutoffFacet facet) {
+		List<Map<String, String>> result = new ArrayList<Map<String,String>>(facet.getFacetNodes().size());
+		for (HierarchicalFacetNode node : facet.getFacetNodes()) {
+			Map<String, String> nodeEntry = new HashMap<String, String>();
+			nodeEntry.put("id", node.getSearchKey());
+			nodeEntry.put("title", node.getDisplayValue());
+			result.add(nodeEntry);
+		}
 		return result;
 	}
 

@@ -21,7 +21,6 @@
 <div class="result_page contentarea">
 	<c:import url="search/searchMenu.jsp"/>
 
-	<h1>Trash</h1>
 	<div class="result_area">
 		<div>
 		</div>

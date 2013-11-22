@@ -16,6 +16,7 @@ require.config({
 		'ReindexObjectButton' : 'cdr-admin',
 		'ResultObject' : 'cdr-admin',
 		'ResultObjectList' : 'cdr-admin',
+		'ParentResultObject' : 'cdr-admin',
 		'BatchCallbackButton' : 'cdr-admin',
 		'UnpublishBatchButton' : 'cdr-admin',
 		'PublishBatchButton' : 'cdr-admin',
@@ -56,7 +57,9 @@ require.config({
 	}
 });
 
-define('resultList', ['module', 'jquery', 'AlertHandler', 'SearchMenu', 'ResultTableView'], function(module, $) {
+define('resultList', ['module', 'jquery', "tpl!../templates/admin/resultTableHeader", "tpl!../templates/admin/navigationBar", "tpl!../templates/admin/pathTrail", 
+	'AddMenu', 'ParentResultObject', 'AlertHandler', 'SearchMenu', 'ResultTableView'],
+	function(module, $, resultTableHeaderTemplate, navigationBarTemplate, pathTrailTemplate, AddMenu, ParentResultObject) {
 	//console.profile();
 	var alertHandler = $("<div id='alertHandler'></div>");
 	alertHandler.alertHandler().appendTo(document.body).hide();
@@ -95,10 +98,36 @@ define('resultList', ['module', 'jquery', 'AlertHandler', 'SearchMenu', 'ResultT
 		resizeResults.call();
 	});
 	
+	var pageNavigation = {
+		resultUrl : module.config().resultUrl,
+		filterParams : module.config().filterParams,
+		pagingActive : module.config().pagingActive,
+		pageStart : module.config().pageStart,
+		pageRows : module.config().pageRows,
+		resultCount : module.config().resultCount
+	};
+	
+	var container = module.config().container;
+	var navigationBar = navigationBarTemplate({pageNavigation : pageNavigation, container : container});
+	var containerPath = pathTrailTemplate({ancestorPath : container.ancestorPath, queryMethod : 'list', filterParams : module.config().filterParams, skipLast : true});
+	var resultTableHeader = resultTableHeaderTemplate({container : container, navigationBar : navigationBar, containerPath : containerPath})
+	
+	if (container) {
+		var containerObject = new ParentResultObject({metadata : container, 
+				element : $(".container_entry", resultTableHeader)});
+		
+		new AddMenu({
+			container : $(resultTableHeader),
+			selector : "#add_menu",
+			alertHandler : alertHandler
+		});
+	}
+	
 	$(".result_area > div").resultTableView({
 		metadataObjects : module.config().metadataObjects,
 		container : module.config().container,
 		alertHandler : alertHandler,
+		resultUrl : module.config().resultUrl,
 		resultFields : {
 			"select" : {name : "", colClass : "narrow", dataType : "index", sortField : "collection"},
 			"resourceType" : {name : "", colClass : "narrow", sortField : "resourceType"},
@@ -108,14 +137,7 @@ define('resultList', ['module', 'jquery', 'AlertHandler', 'SearchMenu', 'ResultT
 			"dateModified" : {name : "Modified", colClass : "date_added", sortField : "dateUpdated"},
 			"actionMenu" : {name : "", colClass : "narrow"}
 		},
-		pageNavigation : {
-			resultUrl : module.config().resultUrl,
-			filterParams : module.config().filterParams,
-			pagingActive : module.config().pagingActive,
-			pageStart : module.config().pageStart,
-			pageRows : module.config().pageRows,
-			resultCount : module.config().resultCount
-		}
+		resultHeader : resultTableHeader
 	});
 	
 	//console.profileEnd();
