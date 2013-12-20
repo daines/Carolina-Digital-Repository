@@ -22,6 +22,10 @@ define('ResultTableView', [ 'jquery', 'jquery-ui', 'ResultObjectList', 'URLUtili
 		_create : function() {
 			// Instantiate the result table view and add it to the page
 			var self = this;
+			
+			this.actionHandler = this.options.actionHandler;
+			this.actionHandler.addToBaseContext('resultTable', this);
+			
 			require([this.options.resultTableTemplate, this.options.navigationBarTemplate], function(resultTableTemplate, navigationBarTemplate){
 				var headerHeightClass = self.options.headerHeightClass;
 				if (self.options.container) {
@@ -280,7 +284,7 @@ define('ResultTableView', [ 'jquery', 'jquery-ui', 'ResultObjectList', 'URLUtili
 				for (var index in resultObjects) {
 					resultObjects[index][toggleFn]();
 				}
-				self._selectionUpdated();
+				self.selectionUpdated();
 			}).children("input").prop("checked", false);
 
 			this.actionMenu = new ResultTableActionMenu({resultObjectList : this.resultObjectList, groups : this.options.resultActions}, 
@@ -291,14 +295,14 @@ define('ResultTableView', [ 'jquery', 'jquery-ui', 'ResultObjectList', 'URLUtili
 			var self = this;
 			$(document).on('click', ".res_entry", function(e){
 				$(this).data('resultObject').toggleSelect();
-				self._selectionUpdated();
+				self.selectionUpdated();
 			});
 			this.$resultTable.on('click', ".res_entry a", function(e){
 				e.stopPropagation();
 			});
 		},
 		
-		_selectionUpdated : function() {
+		selectionUpdated : function() {
 			this.actionMenu.selectionUpdated();
 		},
 		
