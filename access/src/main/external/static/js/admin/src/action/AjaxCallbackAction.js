@@ -84,16 +84,16 @@ define('AjaxCallbackAction', [ 'jquery', 'jquery-ui', 'RemoteStateChangeMonitor'
 					width : 'auto',
 					modal : true
 				};
-			if (this.options.parentObject) {
-				this.options.parentObject.highlight();
+			if (this.context.target) {
+				this.context.target.highlight();
 				dialogOptions['close'] = function() {
-					op.options.parentObject.unhighlight();
+					op.context.target.unhighlight();
 				};
 			}
-				
-			if (this.options.confirmAnchor) {
+			
+			if (this.context.confirmAnchor) {
 				dialogOptions['position'] = {};
-				dialogOptions['position']['of'] = this.options.confirmAnchor; 
+				dialogOptions['position']['of'] = this.context.confirmAnchor; 
 			}
 		
 			var confirmationDialog = new ConfirmationDialog({
@@ -116,9 +116,9 @@ define('AjaxCallbackAction', [ 'jquery', 'jquery-ui', 'RemoteStateChangeMonitor'
 
 	AjaxCallbackAction.prototype.workState = function() {
 		this.disable();
-		if (this.options.parentObject) {
-			this.options.parentObject.setState("working");
-			this.options.parentObject.setStatusText(this.options.workLabel);
+		if (this.context.target) {
+			this.context.target.setState("working");
+			this.context.target.setStatusText(this.options.workLabel);
 		}
 	};
 
@@ -134,17 +134,17 @@ define('AjaxCallbackAction', [ 'jquery', 'jquery-ui', 'RemoteStateChangeMonitor'
 							throw "Operation was unsuccessful";
 					} catch (e) {
 						op.alertHandler.alertHandler('error', e);
-						if (op.options.parentObject)
-							op.options.parentObject.setState("failed");
+						if (op.context.target)
+							op.context.target.setState("failed");
 						return;
 					}
 				}
-				if (op.options.parentObject)
-					op.options.parentObject.setState("followup");
+				if (op.context.target)
+					op.context.target.setState("followup");
 				op.followupMonitor.performPing();
 			} else {
-				if (op.options.parentObject)
-					op.options.parentObject.setState("idle");
+				if (op.context.target)
+					op.context.target.setState("idle");
 				if (op.options.complete)
 					op.options.complete.call(op.options.completeTarget, data);
 				op.enable();
@@ -158,8 +158,8 @@ define('AjaxCallbackAction', [ 'jquery', 'jquery-ui', 'RemoteStateChangeMonitor'
 		this.alertHandler.alertHandler('error', "An error occurred while checking the status of " + (this.options.metadata? this.options.metadata.title : "an object"));
 		if (console && console.log)
 			console.log((this.options.metadata? "Error while checking " + this.options.metadata.id + ": " : "") +errorText, error);
-		if (this.options.parentObject)
-			this.options.parentObject.setState("failed");
+		if (this.context.target)
+			this.context.target.setState("failed");
 	};
 
 	AjaxCallbackAction.prototype.disable = function() {
@@ -181,21 +181,21 @@ define('AjaxCallbackAction', [ 'jquery', 'jquery-ui', 'RemoteStateChangeMonitor'
 	};
 
 	AjaxCallbackAction.prototype.resolveParameters = function(url) {
-		if (!url || !this.pid)
+		if (!url || !this.context.target.pid)
 			return url;
-		return url.replace("{idPath}", this.pid);
+		return url.replace("{idPath}", this.context.target.pid);
 	};
 
 	AjaxCallbackAction.prototype.followupState = function() {
 		if (this.options.followupLabel != null) {
-			if (this.options.parentObject)
-				this.options.parentObject.setStatusText(this.options.followupLabel);
+			if (this.context.target)
+				this.context.target.setStatusText(this.options.followupLabel);
 		}
 	};
 
 	AjaxCallbackAction.prototype.completeState = function(data) {
-		if (this.options.parentObject) {
-			this.options.parentObject.setState("idle");
+		if (this.context.target) {
+			this.context.target.setState("idle");
 		}
 		this.enable();
 	};
